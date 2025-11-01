@@ -35,6 +35,8 @@ export default function DressRentalPage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [carouselApi, setCarouselApi] = useState<any>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   // Autoplay del carousel
   useEffect(() => {
@@ -126,55 +128,174 @@ export default function DressRentalPage() {
       id: 1,
       name: "Vestido Celestial",
       description: "Elegante vestido largo con bordados dorados y escote en V",
+      fullDescription: "Este impresionante vestido largo presenta bordados dorados artesanales que crean un efecto deslumbrante. El escote en V favorece todo tipo de figuras, mientras que la caída fluida del vestido asegura un movimiento elegante. Perfecto para bodas de noche, galas y eventos especiales donde quieras brillar con sofisticación.",
       image: "/golden-embroidered-gown.png",
+      images: [
+        "/golden-embroidered-gown.png",
+        "/mar_1.jpg",
+        "/mar_2.jpg",
+        "/mar_3.jpg"
+      ],
       category: "Largos",
       badges: ["Más Popular", "Disponible"],
       rating: 4.9,
+      reviews: 18,
+      price: "$25,000",
+      sizes: ["S", "M", "L", "XL"],
+      colors: ["Dorado", "Champagne"],
+      features: [
+        "Bordados a mano con hilo dorado",
+        "Escote en V elegante",
+        "Cierre invisible en la espalda",
+        "Forro interior de seda",
+        "Largo hasta el suelo",
+        "Material: Tul bordado y satén"
+      ],
+      care: "Limpieza en seco profesional. No planchar directamente sobre los bordados.",
+      occasion: ["Bodas", "Galas", "Fiestas de Gala", "Eventos Formales"]
     },
     {
       id: 2,
       name: "Vestido Aurora",
       description: "Vestido de gala con falda amplia y detalles de pedrería",
+      fullDescription: "El Vestido Aurora es la definición de elegancia clásica. Con su falda amplia estilo princesa y miles de cristales aplicados a mano, este vestido te hará sentir como realeza. El corpiño ajustado realza la figura, mientras que la falda voluminosa crea una silueta impresionante.",
       image: "/sequined-ball-gown.png",
+      images: [
+        "/sequined-ball-gown.png",
+        "/mar_2.jpg",
+        "/mar_3.jpg"
+      ],
       category: "Largos",
       badges: ["Nuevo", "Disponible"],
       rating: 5.0,
+      reviews: 12,
+      price: "$28,000",
+      sizes: ["XS", "S", "M", "L"],
+      colors: ["Azul Noche", "Plata"],
+      features: [
+        "Más de 2000 cristales aplicados",
+        "Corpiño estructurado",
+        "Falda con crinolina incluida",
+        "Cierre de corsé ajustable",
+        "Cola de 50cm",
+        "Material: Organza y pedrería"
+      ],
+      care: "Limpieza profesional especializada. Guardar en bolsa especial.",
+      occasion: ["Quinceañeros", "Bodas", "Bailes de Gala", "Recepciones"]
     },
     {
       id: 3,
       name: "Vestido Serenidad",
       description: "Diseño minimalista con corte sirena y tela satinada",
+      fullDescription: "Para la mujer que aprecia la elegancia sin excesos. Este vestido de corte sirena abraza las curvas con gracia y sofisticación. El satén de alta calidad refleja la luz de manera sublime, mientras que el diseño minimalista permite que tu belleza natural sea la protagonista.",
       image: "/minimalist-mermaid-dress.png",
+      images: [
+        "/minimalist-mermaid-dress.png",
+        "/mar_1.jpg",
+        "/mar_3.jpg"
+      ],
       category: "Largos",
       badges: ["Disponible"],
       rating: 4.8,
+      reviews: 15,
+      price: "$22,000",
+      sizes: ["S", "M", "L"],
+      colors: ["Negro", "Blanco", "Rojo"],
+      features: [
+        "Corte sirena que estiliza",
+        "Satén premium italiano",
+        "Escote palabra de honor",
+        "Cierre invisible lateral",
+        "Sin adornos - elegancia pura",
+        "Forro completo"
+      ],
+      care: "Limpieza en seco. Colgar en percha acolchada.",
+      occasion: ["Bodas Elegantes", "Cenas de Gala", "Eventos Corporativos", "Alfombra Roja"]
     },
     {
       id: 4,
       name: "Vestido Majestuoso",
       description: "Vestido de noche con mangas de encaje y cola desmontable",
+      fullDescription: "La perfecta combinación de romanticismo y dramatismo. Las mangas de encaje francés añaden un toque de sofisticación vintage, mientras que la cola desmontable te da versatilidad para dos looks en uno. Ideal para ceremonias religiosas que requieren mangas.",
       image: "/majestic-lace-dress.png",
+      images: [
+        "/majestic-lace-dress.png",
+        "/mar_2.jpg"
+      ],
       category: "Largos",
       badges: ["Reservado"],
       rating: 4.7,
+      reviews: 9,
+      price: "$26,500",
+      sizes: ["M", "L", "XL"],
+      colors: ["Marfil", "Blush"],
+      features: [
+        "Encaje francés auténtico",
+        "Mangas largas transparentes",
+        "Cola desmontable de 1 metro",
+        "Pedrería Swarovski en cintura",
+        "Corpiño con varillas",
+        "Doble función: ceremonia y fiesta"
+      ],
+      care: "Limpieza especializada para encaje. No usar vapor.",
+      occasion: ["Bodas Religiosas", "Ceremonias", "Eventos de Etiqueta"]
     },
     {
       id: 5,
       name: "Vestido Radiante",
       description: "Vestido corto con lentejuelas y escote halter",
+      fullDescription: "¡Brilla toda la noche! Este vestido corto está completamente cubierto de lentejuelas que capturan la luz desde todos los ángulos. El escote halter favorece los hombros y el diseño corto te permite moverte con libertad en la pista de baile.",
       image: "/sequined-halter-dress.png",
+      images: [
+        "/sequined-halter-dress.png",
+        "/mar_1.jpg",
+        "/mar_2.jpg"
+      ],
       category: "Cortos",
       badges: ["Más Popular", "Disponible"],
       rating: 4.9,
+      reviews: 22,
+      price: "$18,000",
+      sizes: ["XS", "S", "M", "L", "XL"],
+      colors: ["Dorado", "Plata", "Negro"],
+      features: [
+        "100% cubierto de lentejuelas",
+        "Escote halter con amarre",
+        "Largo sobre la rodilla",
+        "Forro de elastano para comodidad",
+        "Cierre lateral invisible",
+        "Ideal para bailar"
+      ],
+      care: "Limpieza en seco. Evitar roce excesivo.",
+      occasion: ["Fiestas", "Cumpleaños", "Cocktails", "Salidas Nocturnas"]
     },
     {
       id: 6,
       name: "Vestido Encanto",
       description: "Vestido midi con flores bordadas y cintura marcada",
+      fullDescription: "Romanticismo en su máxima expresión. Este vestido midi combina la elegancia del largo midi con delicados bordados florales que parecen pintados a mano. La cintura marcada crea una silueta favorecedora para todo tipo de cuerpo.",
       image: "/embroidered-floral-midi-dress.png",
+      images: [
+        "/embroidered-floral-midi-dress.png",
+        "/mar_3.jpg"
+      ],
       category: "Cortos",
       badges: ["Disponible"],
       rating: 4.6,
+      reviews: 11,
+      price: "$16,500",
+      sizes: ["S", "M", "L"],
+      colors: ["Rosa", "Azul Cielo", "Lavanda"],
+      features: [
+        "Bordados florales artesanales",
+        "Largo midi elegante",
+        "Cintura entallada",
+        "Falda con vuelo",
+        "Mangas 3/4",
+        "Cierre trasero con botones"
+      ],
+      care: "Limpieza en seco suave. Planchar a temperatura baja.",
+      occasion: ["Baby Shower", "Garden Party", "Bautizos", "Eventos Diurnos"]
     },
   ]
 
@@ -183,37 +304,97 @@ export default function DressRentalPage() {
       id: 7,
       name: "Stilettos Dorados",
       description: "Elegantes tacones altos dorados, perfectos para eventos especiales",
+      fullDescription: "Estos stilettos dorados son el complemento perfecto para cualquier vestido de fiesta. Su acabado metálico captura la luz y añade un toque glamouroso a tu look.",
       image: "/elegant-heels-gold.jpg",
+      images: ["/elegant-heels-gold.jpg"],
       category: "Zapatos",
       badges: ["Disponible"],
       rating: 4.8,
+      reviews: 14,
+      price: "$8,000",
+      sizes: ["35", "36", "37", "38", "39", "40"],
+      colors: ["Dorado"],
+      features: [
+        "Tacón de 10cm",
+        "Punta cerrada",
+        "Plantilla acolchada",
+        "Suela antideslizante",
+        "Hebilla ajustable"
+      ],
+      care: "Limpiar con paño suave. Evitar humedad.",
+      occasion: ["Bodas", "Fiestas", "Eventos Formales"]
     },
     {
       id: 8,
       name: "Pumps Clásicos",
       description: "Zapatos nude de tacón alto, ideales para cualquier vestido",
+      fullDescription: "El color nude alarga visualmente las piernas y combina con absolutamente todo. Estos pumps son la inversión perfecta para cualquier evento.",
       image: "/classic-pumps-nude.png",
+      images: ["/classic-pumps-nude.png"],
       category: "Zapatos",
       badges: ["Más Popular", "Disponible"],
       rating: 5.0,
+      reviews: 28,
+      price: "$7,500",
+      sizes: ["35", "36", "37", "38", "39", "40", "41"],
+      colors: ["Nude", "Beige"],
+      features: [
+        "Tacón de 9cm",
+        "Diseño clásico atemporal",
+        "Plantilla memory foam",
+        "Material sintético premium",
+        "Versatilidad total"
+      ],
+      care: "Limpiar con paño húmedo. Guardar en bolsa.",
+      occasion: ["Todo Tipo de Eventos"]
     },
     {
       id: 9,
       name: "Sandalias Plateadas",
       description: "Sandalias con tiras plateadas, elegantes y cómodas",
+      fullDescription: "Estas sandalias combinan estilo y comodidad. Las tiras cruzadas proporcionan sujeción mientras que el acabado plateado añade sofisticación.",
       image: "/strappy-sandals-silver.jpg",
+      images: ["/strappy-sandals-silver.jpg"],
       category: "Zapatos",
       badges: ["Disponible"],
       rating: 4.7,
+      reviews: 16,
+      price: "$6,500",
+      sizes: ["35", "36", "37", "38", "39"],
+      colors: ["Plateado", "Oro Rosa"],
+      features: [
+        "Tacón de 8cm",
+        "Tiras ajustables",
+        "Hebilla en tobillo",
+        "Más comodidad",
+        "Ideal para bailar"
+      ],
+      care: "Limpiar con paño seco. Evitar rayar el acabado.",
+      occasion: ["Fiestas", "Bodas", "Eventos de Verano"]
     },
     {
       id: 10,
       name: "Tacones Negros",
       description: "Zapatos negros de punta, clásicos y sofisticados",
+      fullDescription: "La elegancia del negro en su máxima expresión. Estos tacones de punta son perfectos para eventos formales y combinan con cualquier outfit.",
       image: "/pointed-toe-heels-black.png",
+      images: ["/pointed-toe-heels-black.png"],
       category: "Zapatos",
       badges: ["Disponible"],
       rating: 4.9,
+      reviews: 19,
+      price: "$7,000",
+      sizes: ["35", "36", "37", "38", "39", "40"],
+      colors: ["Negro"],
+      features: [
+        "Tacón de 11cm",
+        "Punta afilada elegante",
+        "Material de cuero sintético",
+        "Muy estilizador",
+        "Clásico atemporal"
+      ],
+      care: "Limpiar con productos específicos para negro. Mantener brillo.",
+      occasion: ["Eventos Formales", "Galas", "Cenas Elegantes"]
     },
   ]
 
@@ -251,6 +432,226 @@ export default function DressRentalPage() {
   const longDresses = filteredProducts.filter((product) => product.category === "Largos")
   const shortDresses = filteredProducts.filter((product) => product.category === "Cortos")
   const shoesProducts = filteredProducts.filter((product) => product.category === "Zapatos")
+
+  const ProductDetail = ({ product }: { product: any }) => {
+    if (!product) return null
+
+    return (
+      <div className="grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:max-h-[82vh]">
+        {/* Galería de Imágenes - FIJA en desktop, normal en mobile */}
+        <div className="space-y-4 lg:sticky lg:top-0 lg:self-start">
+          {/* Imagen Principal */}
+          <div className="relative w-full lg:max-h-[68vh] max-h-[50vh] rounded-2xl overflow-hidden bg-gray-100 shadow-xl flex items-center justify-center">
+            <img
+              src={product.images[selectedImageIndex]}
+              alt={product.name}
+              className="w-full h-auto lg:max-h-[68vh] max-h-[50vh] object-contain"
+            />
+            <button
+              onClick={() => toggleFavorite(product.id)}
+              className="absolute top-4 right-4 bg-white p-3 rounded-full shadow-lg hover:scale-110 transition-all z-10"
+            >
+              <Heart className={`h-6 w-6 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+            </button>
+            
+            {/* Badges */}
+            <div className="absolute top-4 left-4 flex flex-col gap-2">
+              {product.badges.map((badge: string, idx: number) => (
+                <Badge 
+                  key={idx}
+                  className={`${
+                    badge === "Más Popular" ? "bg-[#128498]" :
+                    badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
+                    badge === "Disponible" ? "bg-green-500" :
+                    "bg-red-500"
+                  } shadow-lg`}
+                >
+                  {badge}
+                </Badge>
+              ))}
+            </div>
+
+            {/* Navegación de imágenes */}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  onClick={() => setSelectedImageIndex((prev: number) => 
+                    prev > 0 ? prev - 1 : product.images.length - 1
+                  )}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
+                >
+                  <ChevronDown className="h-5 w-5 rotate-90 text-gray-800" />
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex((prev: number) => 
+                    prev < product.images.length - 1 ? prev + 1 : 0
+                  )}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
+                >
+                  <ChevronDown className="h-5 w-5 -rotate-90 text-gray-800" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Miniaturas */}
+          {product.images.length > 1 && (
+            <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
+              {product.images.map((image: string, idx: number) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImageIndex(idx)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                    selectedImageIndex === idx ? 'border-[#128498] shadow-lg scale-105' : 'border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Información del Producto - CON SCROLL solo en desktop */}
+        <div className="space-y-5 pb-4 lg:overflow-y-auto lg:max-h-[82vh] product-detail-scroll lg:pr-2">
+          {/* Header */}
+          <div>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              {product.name}
+            </h2>
+            <div className="flex items-center gap-4 mb-3">
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className={`h-5 w-5 ${i < Math.floor(product.rating) ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />
+                ))}
+              </div>
+              <span className="text-gray-600">
+                {product.rating} ({product.reviews} reseñas)
+              </span>
+            </div>
+            <p className="text-3xl font-bold text-[#128498]">{product.price}</p>
+            <p className="text-sm text-gray-500 mt-1">Precio de alquiler por evento</p>
+          </div>
+
+          {/* Descripción */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-2">Descripción</h3>
+            <p className="text-gray-600 leading-relaxed">{product.fullDescription}</p>
+          </div>
+
+          {/* Tallas */}
+          {product.sizes && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Tallas Disponibles</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((size: string) => (
+                  <div
+                    key={size}
+                    className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-700 hover:border-[#128498] hover:text-[#128498] transition-all cursor-pointer"
+                  >
+                    {size}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Colores */}
+          {product.colors && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Colores Disponibles</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((color: string) => (
+                  <Badge key={color} variant="outline" className="px-3 py-1 text-sm">
+                    {color}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Características */}
+          {product.features && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Características</h3>
+              <ul className="space-y-2">
+                {product.features.map((feature: string, idx: number) => (
+                  <li key={idx} className="flex items-start gap-2 text-gray-600">
+                    <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Cuidados */}
+          {product.care && (
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Shield className="h-5 w-5 text-amber-600" />
+                Cuidados
+              </h3>
+              <p className="text-gray-700 text-sm">{product.care}</p>
+            </div>
+          )}
+
+          {/* Ocasiones */}
+          {product.occasion && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Ideal Para</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.occasion.map((occ: string) => (
+                  <Badge key={occ} className="bg-[#B4D8D8] text-gray-800 hover:bg-[#9bc2c2]">
+                    {occ}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTAs - Sticky solo en desktop con scroll */}
+          <div className="lg:sticky lg:bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-6 pb-2 lg:-mx-2 lg:px-2 border-t space-y-3 mt-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white">
+                  <CalendarIcon className="mr-2 h-5 w-5" />
+                  Reservar Cita para Probar
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="font-serif text-2xl text-center">
+                    Reservar {product.name}
+                  </DialogTitle>
+                  <DialogDescription className="text-center text-gray-600">
+                    Agenda tu cita para probarte este artículo
+                  </DialogDescription>
+                </DialogHeader>
+                <AppointmentForm itemName={product.name} />
+              </DialogContent>
+            </Dialog>
+            
+            <a
+              href="https://wa.me/1234567890"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 border-2 border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-all font-semibold"
+            >
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+              </svg>
+              Consultar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const AppointmentForm = ({ itemName }: { itemName?: string }) => (
     <div className="space-y-6">
@@ -836,26 +1237,24 @@ export default function DressRentalPage() {
                           </div>
                           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{dress.description}</p>
                           <Dialog>
-                            {/* <DialogTrigger asChild>
+                            <DialogTrigger asChild>
                               <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={() => {
+                                  setSelectedProduct(dress)
+                                  setSelectedImageIndex(0)
+                                }}
                                 className="w-full border-2 border-[#128498] text-[#128498] hover:bg-[#128498] hover:text-white bg-transparent transition-all"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                Agendar Prueba
+                                Ver Detalles
                               </Button>
-                            </DialogTrigger> */}
-                            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                            </DialogTrigger>
+                            <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden p-8">
                               <DialogHeader>
-                                <DialogTitle className="font-serif text-2xl text-center">
-                                  Reservar {dress.name}
-                                </DialogTitle>
-                                <DialogDescription className="text-center text-gray-600">
-                                  Agenda tu cita para probarte este hermoso vestido
-                                </DialogDescription>
+                                <DialogTitle className="sr-only">{dress.name}</DialogTitle>
                               </DialogHeader>
-                              <AppointmentForm itemName={dress.name} />
+                              <ProductDetail product={selectedProduct} />
                             </DialogContent>
                           </Dialog>
                         </CardContent>
@@ -925,26 +1324,24 @@ export default function DressRentalPage() {
                           </div>
                           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{dress.description}</p>
                           <Dialog>
-                            {/* <DialogTrigger asChild>
+                            <DialogTrigger asChild>
                               <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={() => {
+                                  setSelectedProduct(dress)
+                                  setSelectedImageIndex(0)
+                                }}
                                 className="w-full border-2 border-[#AB9072] text-[#AB9072] hover:bg-[#AB9072] hover:text-white bg-transparent transition-all"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                Agendar Prueba
+                                Ver Detalles
                               </Button>
-                            </DialogTrigger> */}
-                            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                            </DialogTrigger>
+                            <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden p-8">
                               <DialogHeader>
-                                <DialogTitle className="font-serif text-2xl text-center">
-                                  Reservar {dress.name}
-                                </DialogTitle>
-                                <DialogDescription className="text-center text-gray-600">
-                                  Agenda tu cita para probarte este hermoso vestido
-                                </DialogDescription>
+                                <DialogTitle className="sr-only">{dress.name}</DialogTitle>
                               </DialogHeader>
-                              <AppointmentForm itemName={dress.name} />
+                              <ProductDetail product={selectedProduct} />
                             </DialogContent>
                           </Dialog>
                         </CardContent>
@@ -1011,26 +1408,24 @@ export default function DressRentalPage() {
                           </div>
                           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{shoe.description}</p>
                           <Dialog>
-                            {/* <DialogTrigger asChild>
+                            <DialogTrigger asChild>
                               <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={() => {
+                                  setSelectedProduct(shoe)
+                                  setSelectedImageIndex(0)
+                                }}
                                 className="w-full border-2 border-[#A1D0B2] text-[#A1D0B2] hover:bg-[#A1D0B2] hover:text-white bg-transparent transition-all"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                Agendar Prueba
+                                Ver Detalles
                               </Button>
-                            </DialogTrigger> */}
-                            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                            </DialogTrigger>
+                            <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden p-8">
                               <DialogHeader>
-                                <DialogTitle className="font-serif text-2xl text-center">
-                                  Reservar {shoe.name}
-                                </DialogTitle>
-                                <DialogDescription className="text-center text-gray-600">
-                                  Agenda tu cita para probarte estos hermosos zapatos
-                                </DialogDescription>
+                                <DialogTitle className="sr-only">{shoe.name}</DialogTitle>
                               </DialogHeader>
-                              <AppointmentForm itemName={shoe.name} />
+                              <ProductDetail product={selectedProduct} />
                             </DialogContent>
                           </Dialog>
                         </CardContent>
