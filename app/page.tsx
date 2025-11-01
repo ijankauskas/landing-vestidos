@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog"
@@ -16,6 +16,7 @@ import {
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 export default function DressRentalPage() {
   const [formData, setFormData] = useState({
@@ -32,6 +33,61 @@ export default function DressRentalPage() {
   const [formStep, setFormStep] = useState(1)
   const [favorites, setFavorites] = useState<number[]>([])
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
+  const [carouselApi, setCarouselApi] = useState<any>(null)
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Autoplay del carousel
+  useEffect(() => {
+    if (!carouselApi) return
+
+    // Actualizar slide actual cuando cambia
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap())
+    }
+
+    carouselApi.on('select', onSelect)
+    onSelect() // Llamar inicialmente
+
+    const intervalId = setInterval(() => {
+      if (carouselApi.canScrollNext()) {
+        carouselApi.scrollNext()
+      } else {
+        carouselApi.scrollTo(0)
+      }
+    }, 5000) // Cambia cada 5 segundos
+
+    return () => {
+      clearInterval(intervalId)
+      carouselApi.off('select', onSelect)
+    }
+  }, [carouselApi])
+
+  const carouselSlides = [
+    {
+      id: 1,
+      image: "/mar_2.jpg",
+      title: "Vestidos que Cuentan Historias",
+      subtitle: "Elegancia para cada ocasión especial",
+      cta: "Reservar Cita",
+      gradient: "from-[#128498]/80 via-[#128498]/60 to-transparent"
+    },
+    {
+      id: 2,
+      image: "/mar_1.jpg",
+      title: "Encuentra Tu Vestido Perfecto",
+      subtitle: "Más de 100 diseños exclusivos disponibles",
+      cta: "Ver Catálogo",
+      gradient: "from-[#AB9072]/80 via-[#AB9072]/60 to-transparent"
+    },
+    {
+      id: 3,
+      image: "/mar_3.jpg",
+      title: "Brilla en Tu Evento",
+      subtitle: "Colección Premium 2025",
+      cta: "Explorar Colección",
+      gradient: "from-[#A1D0B2]/80 via-[#A1D0B2]/60 to-transparent"
+    }
+  ]
 
   const availableTimeSlots = ["10:00","10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"]
 
@@ -216,41 +272,41 @@ export default function DressRentalPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
         {formStep === 1 ? (
           <>
-            <div>
-              <Label htmlFor="name">Nombre y Apellido</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      <div>
+        <Label htmlFor="name">Nombre y Apellido</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ej: María González"
-                required
-              />
-            </div>
-            <div>
+          required
+        />
+      </div>
+      <div>
               <Label htmlFor="phone">Teléfono (WhatsApp)</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        <Input
+          id="phone"
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="Ej: +54 9 11 1234-5678"
-                required
-              />
-            </div>
-            <div>
+          required
+        />
+      </div>
+      <div>
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        <Input
+          id="email"
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="tu@email.com"
-                required
-              />
-            </div>
+          required
+        />
+      </div>
             <Button 
               type="button" 
               onClick={() => {
@@ -265,44 +321,44 @@ export default function DressRentalPage() {
           </>
         ) : (
           <>
-            <div>
-              <Label>Fecha de la Cita</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
+      <div>
+        <Label>Fecha de la Cita</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formatDate(formData.date)}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.date}
-                    onSelect={(date) => setFormData({ ...formData, date })}
-                    disabled={(date) => date < new Date() || date.getDay() === 0}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              {formatDate(formData.date)}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={formData.date}
+              onSelect={(date) => setFormData({ ...formData, date })}
+              disabled={(date) => date < new Date() || date.getDay() === 0}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
               <p className="text-xs text-gray-500 mt-1">No atendemos domingos</p>
-            </div>
-            <div>
-              <Label htmlFor="time">Horario Disponible</Label>
-              <select
-                id="time"
-                value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+      </div>
+      <div>
+        <Label htmlFor="time">Horario Disponible</Label>
+        <select
+          id="time"
+          value={formData.time}
+          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498]"
-                required
-              >
-                <option value="">Selecciona un horario</option>
-                {availableTimeSlots.map((slot) => (
-                  <option key={slot} value={slot}>
+          required
+        >
+          <option value="">Selecciona un horario</option>
+          {availableTimeSlots.map((slot) => (
+            <option key={slot} value={slot}>
                     {slot} hs
-                  </option>
-                ))}
-              </select>
-            </div>
+            </option>
+          ))}
+        </select>
+      </div>
             <div>
               <Label htmlFor="dni">DNI (opcional)</Label>
               <Input
@@ -321,7 +377,7 @@ export default function DressRentalPage() {
                 className="flex-1"
               >
                 <ChevronUp className="mr-2 h-4 w-4" /> Volver
-              </Button>
+      </Button>
               <Button type="submit" className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white">
                 <Check className="mr-2 h-4 w-4" />
                 Confirmar Cita
@@ -329,7 +385,7 @@ export default function DressRentalPage() {
             </div>
           </>
         )}
-      </form>
+    </form>
     </div>
   )
 
@@ -419,7 +475,133 @@ export default function DressRentalPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Carousel */}
+      <section className="relative w-full">
+        <Carousel 
+          className="w-full"
+          setApi={setCarouselApi}
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
+          <CarouselContent>
+            {carouselSlides.map((slide) => (
+              <CarouselItem key={slide.id}>
+                <div className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden">
+                  {/* Background Image */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{ 
+                      backgroundImage: `url(${slide.image})`,
+                      backgroundPosition: 'center 30%'
+                    }}
+                  >
+                    {/* Gradient Overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-r ${slide.gradient}`}></div>
+                    <div className="absolute inset-0 bg-black/20"></div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 h-full flex items-center">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                      <div className="max-w-2xl">
+                        <div className="mb-6 inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-md rounded-full">
+                          <Sparkles className="h-4 w-4 text-white mr-2" />
+                          <span className="text-sm font-medium text-white">Díaz & De Luca</span>
+                        </div>
+                        
+                        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
+                          {slide.title}
+                        </h1>
+                        
+                        <p className="text-xl md:text-2xl text-white/95 mb-8 leading-relaxed drop-shadow-lg">
+                          {slide.subtitle}
+                        </p>
+                        
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                size="lg" 
+                                className="bg-white text-[#128498] hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all"
+                              >
+                                <CalendarIcon className="mr-2 h-5 w-5" />
+                                {slide.cta}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                                <DialogDescription className="text-center text-gray-600">
+                                  Agenda tu visita para probarte los vestidos que más te gusten
+                                </DialogDescription>
+                              </DialogHeader>
+                              <AppointmentForm />
+                            </DialogContent>
+                          </Dialog>
+                          
+                          <Button
+                            variant="outline"
+                            size="lg"
+                            onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="border-2 border-white text-white hover:bg-white hover:text-[#128498] px-8 py-6 text-lg font-semibold backdrop-blur-sm bg-white/10 shadow-xl"
+                          >
+                            Ver Catálogo
+                          </Button>
+                        </div>
+
+                        {/* Trust Badges */}
+                        {/* <div className="mt-12 flex flex-wrap gap-6">
+                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
+                            <Star className="h-5 w-5 text-yellow-400 fill-current" />
+                            <span className="text-white font-semibold">4.9/5 Rating</span>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
+                            <Users className="h-5 w-5 text-white" />
+                            <span className="text-white font-semibold">200+ Clientas</span>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
+                            <Award className="h-5 w-5 text-white" />
+                            <span className="text-white font-semibold">10+ Años</span>
+                          </div>
+                        </div> */}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scroll Indicator */}
+                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <ChevronDown className="h-8 w-8 text-white opacity-75" />
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          {/* Navigation Arrows */}
+          <CarouselPrevious className="left-4 bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white hover:text-[#128498] h-12 w-12" />
+          <CarouselNext className="right-4 bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white hover:text-[#128498] h-12 w-12" />
+          
+          {/* Carousel Indicators (Dots) */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+            {carouselSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => carouselApi?.scrollTo(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  currentSlide === index 
+                    ? 'w-8 h-3 bg-white' 
+                    : 'w-3 h-3 bg-white/50 hover:bg-white/75'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </Carousel>
+      </section>
+
+      {/* Secondary Hero Section */}
       <section id="inicio" className="relative bg-gradient-to-br from-[#B4D8D8] via-[#E0D7CE] to-[#F9F7F5] py-24 md:py-36 overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -478,7 +660,7 @@ export default function DressRentalPage() {
                 <div className="flex items-center gap-2">
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Check className="h-5 w-5 text-green-600" />
-                  </div>
+            </div>
                   <span className="text-sm text-gray-600">Calidad Premium</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -498,9 +680,9 @@ export default function DressRentalPage() {
             
             <div className="relative">
               <div className="relative z-10">
-                <img
-                  src="/elegant-woman-evening-dress.png"
-                  alt="Mujer elegante en vestido de fiesta"
+              <img
+                src="/elegant-woman-evening-dress.png"
+                alt="Mujer elegante en vestido de fiesta"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
               </div>
@@ -508,8 +690,8 @@ export default function DressRentalPage() {
                 <div className="flex items-center space-x-3">
                   <div className="flex -space-x-2">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#128498] to-[#A1D0B2] flex items-center justify-center text-white font-bold">5</div>
-                    <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                  </div>
+                  <Star className="h-5 w-5 text-yellow-500 fill-current" />
+                </div>
                   <div>
                     <p className="font-bold text-gray-900">4.9/5</p>
                     <p className="text-sm text-gray-600">+200 clientas</p>
@@ -982,7 +1164,7 @@ export default function DressRentalPage() {
                   ))}
                 </div>
                 <p className="text-gray-700 italic leading-relaxed">"{testimonial.comment}"</p>
-              </Card>
+            </Card>
             ))}
           </div>
 
@@ -1070,7 +1252,7 @@ export default function DressRentalPage() {
                 >
                   <h3 className="font-serif text-lg md:text-xl font-semibold text-gray-900 pr-4">
                     {faq.q}
-                  </h3>
+              </h3>
                   <div className={`flex-shrink-0 transition-transform duration-300 ${expandedFaq === index ? 'rotate-180' : ''}`}>
                     <ChevronDown className="h-6 w-6 text-[#128498]" />
                   </div>
@@ -1084,7 +1266,7 @@ export default function DressRentalPage() {
                     <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                   </div>
                 </div>
-              </Card>
+            </Card>
             ))}
 
             <Card className="p-6 bg-gradient-to-r from-[#B4D8D8] to-[#E0D7CE] border-2 border-[#128498]/20 mt-8">
@@ -1094,7 +1276,7 @@ export default function DressRentalPage() {
                 </div>
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-[#128498] mb-1">¡Te esperamos!</h3>
-                  <p className="text-gray-700">Estamos aquí para hacer de tu evento algo inolvidable.</p>
+              <p className="text-gray-700">Estamos aquí para hacer de tu evento algo inolvidable.</p>
                 </div>
               </div>
             </Card>
@@ -1184,7 +1366,7 @@ export default function DressRentalPage() {
                 <img src="/diaz-deluca-logo.jpg" alt="Logo" className="h-12 w-12 rounded-lg" />
                 <h3 className="font-serif text-2xl font-bold">
                   Díaz <span className="text-[#128498]">&</span> De Luca
-                </h3>
+              </h3>
               </div>
               <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
                 Más de 10 años creando momentos inolvidables. Tu elegancia es nuestra pasión. Vestidos de alta calidad para cada ocasión especial.
