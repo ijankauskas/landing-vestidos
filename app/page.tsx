@@ -17,6 +17,206 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { getArticulosPublicos, convertirArticuloAProducto, crearLeadPublico, separarNombreCompleto, formatearFechaAPI } from "@/lib/api"
+import type { Articulo } from "@/types/articulo"
+
+// Componente de formulario de cita separado para evitar pérdida de foco
+interface AppointmentFormProps {
+  itemName?: string
+  formData: {
+    name: string
+    phone: string
+    email: string
+    dni: string
+    date: Date | undefined
+    time: string
+  }
+  setFormData: React.Dispatch<React.SetStateAction<{
+    name: string
+    phone: string
+    email: string
+    dni: string
+    date: Date | undefined
+    time: string
+  }>>
+  formStep: number
+  setFormStep: (step: number) => void
+  handleSubmit: (e: React.FormEvent) => void
+  formatDate: (date: Date | undefined) => string
+  availableTimeSlots: string[]
+  submittingForm: boolean
+  submitError: string | null
+}
+
+const AppointmentForm: React.FC<AppointmentFormProps> = ({
+  itemName,
+  formData,
+  setFormData,
+  formStep,
+  setFormStep,
+  handleSubmit,
+  formatDate,
+  availableTimeSlots,
+  submittingForm,
+  submitError,
+}) => (
+  <div className="space-y-6">
+    {itemName && (
+      <div className="bg-[#B4D8D8]/20 p-4 rounded-lg text-center">
+        <p className="text-sm text-gray-600">Reservando cita para probar:</p>
+        <p className="font-serif text-lg font-semibold text-[#128498]">{itemName}</p>
+      </div>
+    )}
+    
+    {/* Progress Indicator */}
+    <div className="flex items-center justify-center space-x-2">
+      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#128498] text-white' : 'bg-[#B4D8D8] text-gray-700'} font-semibold`}>
+        1
+      </div>
+      <div className="w-12 h-1 bg-gray-200"></div>
+      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 2 ? 'bg-[#128498] text-white' : 'bg-gray-200 text-gray-400'} font-semibold`}>
+        2
+      </div>
+    </div>
+
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {formStep === 1 ? (
+        <>
+          <div>
+            <Label htmlFor="name">Nombre y Apellido</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="Ej: María González"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="phone">Teléfono (WhatsApp)</Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="Ej: +54 9 11 1234-5678"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+          <Button 
+            type="button" 
+            onClick={() => {
+              if (formData.name && formData.phone && formData.email) {
+                setFormStep(2)
+              }
+            }}
+            className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white"
+          >
+            Continuar <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </>
+      ) : (
+        <>
+          <div>
+            <Label>Fecha de la Cita</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formatDate(formData.date)}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.date}
+                  onSelect={(date) => setFormData({ ...formData, date })}
+                  disabled={(date) => date < new Date() || date.getDay() === 0}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            <p className="text-xs text-gray-500 mt-1">No atendemos domingos</p>
+          </div>
+          <div>
+            <Label htmlFor="time">Horario Disponible</Label>
+            <select
+              id="time"
+              value={formData.time}
+              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498]"
+              required
+            >
+              <option value="">Selecciona un horario</option>
+              {availableTimeSlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot} hs
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label htmlFor="dni">DNI (opcional)</Label>
+            <Input
+              id="dni"
+              value={formData.dni}
+              onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
+              placeholder="12345678"
+            />
+            <p className="text-xs text-gray-500 mt-1">Solo necesario para la reserva final</p>
+          </div>
+          
+          {/* Mensaje de error */}
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+              {submitError}
+            </div>
+          )}
+          
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={() => setFormStep(1)}
+              className="flex-1"
+              disabled={submittingForm}
+            >
+              <ChevronUp className="mr-2 h-4 w-4" /> Volver
+            </Button>
+            <Button 
+              type="submit" 
+              className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white"
+              disabled={submittingForm}
+            >
+              {submittingForm ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Check className="mr-2 h-4 w-4" />
+                  Confirmar Cita
+                </>
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+    </form>
+  </div>
+)
 
 export default function DressRentalPage() {
   const [formData, setFormData] = useState({
@@ -37,6 +237,15 @@ export default function DressRentalPage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  
+  // Estados para artículos de la API
+  const [articulosAPI, setArticulosAPI] = useState<any[]>([])
+  const [loadingArticulos, setLoadingArticulos] = useState(true)
+  const [errorArticulos, setErrorArticulos] = useState<string | null>(null)
+  
+  // Estados para el formulario de cita
+  const [submittingForm, setSubmittingForm] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   // Autoplay del carousel
   useEffect(() => {
@@ -63,6 +272,33 @@ export default function DressRentalPage() {
       carouselApi.off('select', onSelect)
     }
   }, [carouselApi])
+
+  // Cargar artículos de la API
+  useEffect(() => {
+    const fetchArticulos = async () => {
+      try {
+        setLoadingArticulos(true)
+        setErrorArticulos(null)
+        
+        const response = await getArticulosPublicos(1, 50) // Obtener hasta 50 artículos
+        
+        // Convertir artículos de la API al formato del componente
+        const productosConvertidos = response.data.map(convertirArticuloAProducto)
+        
+        setArticulosAPI(productosConvertidos)
+        
+        console.log(`✅ ${response.data.length} artículos cargados desde la API`)
+      } catch (error) {
+        console.error("❌ Error cargando artículos desde la API:", error)
+        setErrorArticulos(error instanceof Error ? error.message : "Error desconocido")
+        // No mostrar error al usuario, simplemente usar datos hardcodeados
+      } finally {
+        setLoadingArticulos(false)
+      }
+    }
+
+    fetchArticulos()
+  }, [])
 
   const carouselSlides = [
     {
@@ -114,289 +350,63 @@ export default function DressRentalPage() {
     setExpandedFaq(expandedFaq === index ? null : index)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí se integraría con el ERP externo
-    console.log("Datos del formulario:", formData)
-    alert("¡Solicitud de cita enviada! Te contactaremos pronto.")
-    setFormData({ name: "", phone: "", email: "", dni: "", date: undefined, time: "" })
-    setFormStep(1)
+    
+    // Validar que tengamos todos los datos necesarios
+    if (!formData.name || !formData.email || !formData.date || !formData.time) {
+      setSubmitError("Por favor completa todos los campos requeridos")
+      return
+    }
+    
+    setSubmittingForm(true)
+    setSubmitError(null)
+    
+    try {
+      // Separar nombre y apellido
+      const { nombre, apellido } = separarNombreCompleto(formData.name)
+      
+      // Formatear fecha
+      const fechaFormateada = formatearFechaAPI(formData.date)
+      
+      // Preparar datos para el API
+      const leadData = {
+        nombre,
+        apellido,
+        email: formData.email,
+        telefono: formData.phone || undefined,
+        dni: formData.dni || undefined,
+        crearCita: true,
+        fecha: fechaFormateada,
+        horario: formData.time,
+      }
+      
+      console.log("Enviando lead:", leadData)
+      
+      // Enviar a la API
+      const response = await crearLeadPublico(leadData)
+      
+      if (response.success) {
+        // Éxito
+        alert("¡Solicitud de cita enviada exitosamente! Te contactaremos pronto.")
+        
+        // Limpiar formulario
+        setFormData({ name: "", phone: "", email: "", dni: "", date: undefined, time: "" })
+        setFormStep(1)
+      } else {
+        // Error desde la API
+        setSubmitError(response.message || "Error al enviar la solicitud")
+        alert(`Error: ${response.message}`)
+      }
+    } catch (error) {
+      console.error("Error al enviar formulario:", error)
+      setSubmitError("Error de conexión. Por favor intenta nuevamente.")
+      alert("Error al enviar la solicitud. Por favor intenta nuevamente.")
+    } finally {
+      setSubmittingForm(false)
+    }
   }
 
-  const dresses = [
-    {
-      id: 1,
-      name: "Vestido Celestial",
-      description: "Elegante vestido largo con bordados dorados y escote en V",
-      fullDescription: "Este impresionante vestido largo presenta bordados dorados artesanales que crean un efecto deslumbrante. El escote en V favorece todo tipo de figuras, mientras que la caída fluida del vestido asegura un movimiento elegante. Perfecto para bodas de noche, galas y eventos especiales donde quieras brillar con sofisticación.",
-      image: "/golden-embroidered-gown.png",
-      images: [
-        "/golden-embroidered-gown.png",
-        "/mar_1.jpg",
-        "/mar_2.jpg",
-        "/mar_3.jpg"
-      ],
-      category: "Largos",
-      badges: ["Más Popular", "Disponible"],
-      rating: 4.9,
-      reviews: 18,
-      price: "$25,000",
-      sizes: ["S", "M", "L", "XL"],
-      colors: ["Dorado", "Champagne"],
-      features: [
-        "Bordados a mano con hilo dorado",
-        "Escote en V elegante",
-        "Cierre invisible en la espalda",
-        "Forro interior de seda",
-        "Largo hasta el suelo",
-        "Material: Tul bordado y satén"
-      ],
-      care: "Limpieza en seco profesional. No planchar directamente sobre los bordados.",
-      occasion: ["Bodas", "Galas", "Fiestas de Gala", "Eventos Formales"]
-    },
-    {
-      id: 2,
-      name: "Vestido Aurora",
-      description: "Vestido de gala con falda amplia y detalles de pedrería",
-      fullDescription: "El Vestido Aurora es la definición de elegancia clásica. Con su falda amplia estilo princesa y miles de cristales aplicados a mano, este vestido te hará sentir como realeza. El corpiño ajustado realza la figura, mientras que la falda voluminosa crea una silueta impresionante.",
-      image: "/sequined-ball-gown.png",
-      images: [
-        "/sequined-ball-gown.png",
-        "/mar_2.jpg",
-        "/mar_3.jpg"
-      ],
-      category: "Largos",
-      badges: ["Nuevo", "Disponible"],
-      rating: 5.0,
-      reviews: 12,
-      price: "$28,000",
-      sizes: ["XS", "S", "M", "L"],
-      colors: ["Azul Noche", "Plata"],
-      features: [
-        "Más de 2000 cristales aplicados",
-        "Corpiño estructurado",
-        "Falda con crinolina incluida",
-        "Cierre de corsé ajustable",
-        "Cola de 50cm",
-        "Material: Organza y pedrería"
-      ],
-      care: "Limpieza profesional especializada. Guardar en bolsa especial.",
-      occasion: ["Quinceañeros", "Bodas", "Bailes de Gala", "Recepciones"]
-    },
-    {
-      id: 3,
-      name: "Vestido Serenidad",
-      description: "Diseño minimalista con corte sirena y tela satinada",
-      fullDescription: "Para la mujer que aprecia la elegancia sin excesos. Este vestido de corte sirena abraza las curvas con gracia y sofisticación. El satén de alta calidad refleja la luz de manera sublime, mientras que el diseño minimalista permite que tu belleza natural sea la protagonista.",
-      image: "/minimalist-mermaid-dress.png",
-      images: [
-        "/minimalist-mermaid-dress.png",
-        "/mar_1.jpg",
-        "/mar_3.jpg"
-      ],
-      category: "Largos",
-      badges: ["Disponible"],
-      rating: 4.8,
-      reviews: 15,
-      price: "$22,000",
-      sizes: ["S", "M", "L"],
-      colors: ["Negro", "Blanco", "Rojo"],
-      features: [
-        "Corte sirena que estiliza",
-        "Satén premium italiano",
-        "Escote palabra de honor",
-        "Cierre invisible lateral",
-        "Sin adornos - elegancia pura",
-        "Forro completo"
-      ],
-      care: "Limpieza en seco. Colgar en percha acolchada.",
-      occasion: ["Bodas Elegantes", "Cenas de Gala", "Eventos Corporativos", "Alfombra Roja"]
-    },
-    {
-      id: 4,
-      name: "Vestido Majestuoso",
-      description: "Vestido de noche con mangas de encaje y cola desmontable",
-      fullDescription: "La perfecta combinación de romanticismo y dramatismo. Las mangas de encaje francés añaden un toque de sofisticación vintage, mientras que la cola desmontable te da versatilidad para dos looks en uno. Ideal para ceremonias religiosas que requieren mangas.",
-      image: "/majestic-lace-dress.png",
-      images: [
-        "/majestic-lace-dress.png",
-        "/mar_2.jpg"
-      ],
-      category: "Largos",
-      badges: ["Reservado"],
-      rating: 4.7,
-      reviews: 9,
-      price: "$26,500",
-      sizes: ["M", "L", "XL"],
-      colors: ["Marfil", "Blush"],
-      features: [
-        "Encaje francés auténtico",
-        "Mangas largas transparentes",
-        "Cola desmontable de 1 metro",
-        "Pedrería Swarovski en cintura",
-        "Corpiño con varillas",
-        "Doble función: ceremonia y fiesta"
-      ],
-      care: "Limpieza especializada para encaje. No usar vapor.",
-      occasion: ["Bodas Religiosas", "Ceremonias", "Eventos de Etiqueta"]
-    },
-    {
-      id: 5,
-      name: "Vestido Radiante",
-      description: "Vestido corto con lentejuelas y escote halter",
-      fullDescription: "¡Brilla toda la noche! Este vestido corto está completamente cubierto de lentejuelas que capturan la luz desde todos los ángulos. El escote halter favorece los hombros y el diseño corto te permite moverte con libertad en la pista de baile.",
-      image: "/sequined-halter-dress.png",
-      images: [
-        "/sequined-halter-dress.png",
-        "/mar_1.jpg",
-        "/mar_2.jpg"
-      ],
-      category: "Cortos",
-      badges: ["Más Popular", "Disponible"],
-      rating: 4.9,
-      reviews: 22,
-      price: "$18,000",
-      sizes: ["XS", "S", "M", "L", "XL"],
-      colors: ["Dorado", "Plata", "Negro"],
-      features: [
-        "100% cubierto de lentejuelas",
-        "Escote halter con amarre",
-        "Largo sobre la rodilla",
-        "Forro de elastano para comodidad",
-        "Cierre lateral invisible",
-        "Ideal para bailar"
-      ],
-      care: "Limpieza en seco. Evitar roce excesivo.",
-      occasion: ["Fiestas", "Cumpleaños", "Cocktails", "Salidas Nocturnas"]
-    },
-    {
-      id: 6,
-      name: "Vestido Encanto",
-      description: "Vestido midi con flores bordadas y cintura marcada",
-      fullDescription: "Romanticismo en su máxima expresión. Este vestido midi combina la elegancia del largo midi con delicados bordados florales que parecen pintados a mano. La cintura marcada crea una silueta favorecedora para todo tipo de cuerpo.",
-      image: "/embroidered-floral-midi-dress.png",
-      images: [
-        "/embroidered-floral-midi-dress.png",
-        "/mar_3.jpg"
-      ],
-      category: "Cortos",
-      badges: ["Disponible"],
-      rating: 4.6,
-      reviews: 11,
-      price: "$16,500",
-      sizes: ["S", "M", "L"],
-      colors: ["Rosa", "Azul Cielo", "Lavanda"],
-      features: [
-        "Bordados florales artesanales",
-        "Largo midi elegante",
-        "Cintura entallada",
-        "Falda con vuelo",
-        "Mangas 3/4",
-        "Cierre trasero con botones"
-      ],
-      care: "Limpieza en seco suave. Planchar a temperatura baja.",
-      occasion: ["Baby Shower", "Garden Party", "Bautizos", "Eventos Diurnos"]
-    },
-  ]
-
-  const shoes = [
-    {
-      id: 7,
-      name: "Stilettos Dorados",
-      description: "Elegantes tacones altos dorados, perfectos para eventos especiales",
-      fullDescription: "Estos stilettos dorados son el complemento perfecto para cualquier vestido de fiesta. Su acabado metálico captura la luz y añade un toque glamouroso a tu look.",
-      image: "/elegant-heels-gold.jpg",
-      images: ["/elegant-heels-gold.jpg"],
-      category: "Zapatos",
-      badges: ["Disponible"],
-      rating: 4.8,
-      reviews: 14,
-      price: "$8,000",
-      sizes: ["35", "36", "37", "38", "39", "40"],
-      colors: ["Dorado"],
-      features: [
-        "Tacón de 10cm",
-        "Punta cerrada",
-        "Plantilla acolchada",
-        "Suela antideslizante",
-        "Hebilla ajustable"
-      ],
-      care: "Limpiar con paño suave. Evitar humedad.",
-      occasion: ["Bodas", "Fiestas", "Eventos Formales"]
-    },
-    {
-      id: 8,
-      name: "Pumps Clásicos",
-      description: "Zapatos nude de tacón alto, ideales para cualquier vestido",
-      fullDescription: "El color nude alarga visualmente las piernas y combina con absolutamente todo. Estos pumps son la inversión perfecta para cualquier evento.",
-      image: "/classic-pumps-nude.png",
-      images: ["/classic-pumps-nude.png"],
-      category: "Zapatos",
-      badges: ["Más Popular", "Disponible"],
-      rating: 5.0,
-      reviews: 28,
-      price: "$7,500",
-      sizes: ["35", "36", "37", "38", "39", "40", "41"],
-      colors: ["Nude", "Beige"],
-      features: [
-        "Tacón de 9cm",
-        "Diseño clásico atemporal",
-        "Plantilla memory foam",
-        "Material sintético premium",
-        "Versatilidad total"
-      ],
-      care: "Limpiar con paño húmedo. Guardar en bolsa.",
-      occasion: ["Todo Tipo de Eventos"]
-    },
-    {
-      id: 9,
-      name: "Sandalias Plateadas",
-      description: "Sandalias con tiras plateadas, elegantes y cómodas",
-      fullDescription: "Estas sandalias combinan estilo y comodidad. Las tiras cruzadas proporcionan sujeción mientras que el acabado plateado añade sofisticación.",
-      image: "/strappy-sandals-silver.jpg",
-      images: ["/strappy-sandals-silver.jpg"],
-      category: "Zapatos",
-      badges: ["Disponible"],
-      rating: 4.7,
-      reviews: 16,
-      price: "$6,500",
-      sizes: ["35", "36", "37", "38", "39"],
-      colors: ["Plateado", "Oro Rosa"],
-      features: [
-        "Tacón de 8cm",
-        "Tiras ajustables",
-        "Hebilla en tobillo",
-        "Más comodidad",
-        "Ideal para bailar"
-      ],
-      care: "Limpiar con paño seco. Evitar rayar el acabado.",
-      occasion: ["Fiestas", "Bodas", "Eventos de Verano"]
-    },
-    {
-      id: 10,
-      name: "Tacones Negros",
-      description: "Zapatos negros de punta, clásicos y sofisticados",
-      fullDescription: "La elegancia del negro en su máxima expresión. Estos tacones de punta son perfectos para eventos formales y combinan con cualquier outfit.",
-      image: "/pointed-toe-heels-black.png",
-      images: ["/pointed-toe-heels-black.png"],
-      category: "Zapatos",
-      badges: ["Disponible"],
-      rating: 4.9,
-      reviews: 19,
-      price: "$7,000",
-      sizes: ["35", "36", "37", "38", "39", "40"],
-      colors: ["Negro"],
-      features: [
-        "Tacón de 11cm",
-        "Punta afilada elegante",
-        "Material de cuero sintético",
-        "Muy estilizador",
-        "Clásico atemporal"
-      ],
-      care: "Limpiar con productos específicos para negro. Mantener brillo.",
-      occasion: ["Eventos Formales", "Galas", "Cenas Elegantes"]
-    },
-  ]
 
   const testimonials = [
     {
@@ -425,13 +435,29 @@ export default function DressRentalPage() {
     },
   ]
 
-  const allProducts = [...dresses, ...shoes]
+  // Todos los productos vienen de la API
+  const allProducts = [...articulosAPI]
+  
+  // Obtener categorías únicas de los artículos
+  const categoriasDisponibles = ["Todos", ...Array.from(new Set(allProducts.map(p => p.category)))]
+  
+  // Filtrar productos por categoría seleccionada
   const filteredProducts =
     selectedCategory === "Todos" ? allProducts : allProducts.filter((product) => product.category === selectedCategory)
 
-  const longDresses = filteredProducts.filter((product) => product.category === "Largos")
-  const shortDresses = filteredProducts.filter((product) => product.category === "Cortos")
-  const shoesProducts = filteredProducts.filter((product) => product.category === "Zapatos")
+  // Agrupar productos por categoría para mostrarlos organizados
+  const productosPorCategoria: { [key: string]: any[] } = {}
+  filteredProducts.forEach(product => {
+    if (!productosPorCategoria[product.category]) {
+      productosPorCategoria[product.category] = []
+    }
+    productosPorCategoria[product.category].push(product)
+  })
+  
+  // Para compatibilidad con el código existente
+  const longDresses = productosPorCategoria["Largos"] || []
+  const shortDresses = productosPorCategoria["Cortos"] || []
+  const shoesProducts = productosPorCategoria["Zapatos"] || []
 
   const ProductDetail = ({ product }: { product: any }) => {
     if (!product) return null
@@ -543,37 +569,6 @@ export default function DressRentalPage() {
             <p className="text-gray-600 leading-relaxed">{product.fullDescription}</p>
           </div>
 
-          {/* Tallas */}
-          {product.sizes && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Tallas Disponibles</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size: string) => (
-                  <div
-                    key={size}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-700 hover:border-[#128498] hover:text-[#128498] transition-all cursor-pointer"
-                  >
-                    {size}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Colores */}
-          {product.colors && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Colores Disponibles</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.colors.map((color: string) => (
-                  <Badge key={color} variant="outline" className="px-3 py-1 text-sm">
-                    {color}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Características */}
           {product.features && (
             <div>
@@ -632,7 +627,18 @@ export default function DressRentalPage() {
                     Agenda tu cita para probarte este artículo
                   </DialogDescription>
                 </DialogHeader>
-                <AppointmentForm itemName={product.name} />
+                <AppointmentForm 
+                  itemName={product.name}
+                  formData={formData}
+                  setFormData={setFormData}
+                  formStep={formStep}
+                  setFormStep={setFormStep}
+                  handleSubmit={handleSubmit}
+                  formatDate={formatDate}
+                  availableTimeSlots={availableTimeSlots}
+                  submittingForm={submittingForm}
+                  submitError={submitError}
+                />
               </DialogContent>
             </Dialog>
             
@@ -652,143 +658,6 @@ export default function DressRentalPage() {
       </div>
     )
   }
-
-  const AppointmentForm = ({ itemName }: { itemName?: string }) => (
-    <div className="space-y-6">
-      {itemName && (
-        <div className="bg-[#B4D8D8]/20 p-4 rounded-lg text-center">
-          <p className="text-sm text-gray-600">Reservando cita para probar:</p>
-          <p className="font-serif text-lg font-semibold text-[#128498]">{itemName}</p>
-        </div>
-      )}
-      
-      {/* Progress Indicator */}
-      <div className="flex items-center justify-center space-x-2">
-        <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#128498] text-white' : 'bg-[#B4D8D8] text-gray-700'} font-semibold`}>
-          1
-        </div>
-        <div className="w-12 h-1 bg-gray-200"></div>
-        <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 2 ? 'bg-[#128498] text-white' : 'bg-gray-200 text-gray-400'} font-semibold`}>
-          2
-        </div>
-      </div>
-
-    <form onSubmit={handleSubmit} className="space-y-4">
-        {formStep === 1 ? (
-          <>
-      <div>
-        <Label htmlFor="name">Nombre y Apellido</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Ej: María González"
-          required
-        />
-      </div>
-      <div>
-              <Label htmlFor="phone">Teléfono (WhatsApp)</Label>
-        <Input
-          id="phone"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="Ej: +54 9 11 1234-5678"
-          required
-        />
-      </div>
-      <div>
-              <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="tu@email.com"
-          required
-        />
-      </div>
-            <Button 
-              type="button" 
-              onClick={() => {
-                if (formData.name && formData.phone && formData.email) {
-                  setFormStep(2)
-                }
-              }}
-              className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white"
-            >
-              Continuar <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </>
-        ) : (
-          <>
-      <div>
-        <Label>Fecha de la Cita</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-              {formatDate(formData.date)}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={formData.date}
-              onSelect={(date) => setFormData({ ...formData, date })}
-              disabled={(date) => date < new Date() || date.getDay() === 0}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-              <p className="text-xs text-gray-500 mt-1">No atendemos domingos</p>
-      </div>
-      <div>
-        <Label htmlFor="time">Horario Disponible</Label>
-        <select
-          id="time"
-          value={formData.time}
-          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498]"
-          required
-        >
-          <option value="">Selecciona un horario</option>
-          {availableTimeSlots.map((slot) => (
-            <option key={slot} value={slot}>
-                    {slot} hs
-            </option>
-          ))}
-        </select>
-      </div>
-            <div>
-              <Label htmlFor="dni">DNI (opcional)</Label>
-              <Input
-                id="dni"
-                value={formData.dni}
-                onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
-                placeholder="12345678"
-              />
-              <p className="text-xs text-gray-500 mt-1">Solo necesario para la reserva final</p>
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={() => setFormStep(1)}
-                className="flex-1"
-              >
-                <ChevronUp className="mr-2 h-4 w-4" /> Volver
-      </Button>
-              <Button type="submit" className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white">
-                <Check className="mr-2 h-4 w-4" />
-                Confirmar Cita
-              </Button>
-            </div>
-          </>
-        )}
-    </form>
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-[#F9F7F5]">
@@ -845,7 +714,17 @@ export default function DressRentalPage() {
                   <DialogHeader>
                     <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
                   </DialogHeader>
-                  <AppointmentForm />
+                  <AppointmentForm 
+                    formData={formData}
+                    setFormData={setFormData}
+                    formStep={formStep}
+                    setFormStep={setFormStep}
+                    handleSubmit={handleSubmit}
+                    formatDate={formatDate}
+                    availableTimeSlots={availableTimeSlots}
+                    submittingForm={submittingForm}
+                    submitError={submitError}
+                  />
                 </DialogContent>
               </Dialog>
 
@@ -938,7 +817,17 @@ export default function DressRentalPage() {
                                   Agenda tu visita para probarte los vestidos que más te gusten
                                 </DialogDescription>
                               </DialogHeader>
-                              <AppointmentForm />
+                              <AppointmentForm 
+                                formData={formData}
+                                setFormData={setFormData}
+                                formStep={formStep}
+                                setFormStep={setFormStep}
+                                handleSubmit={handleSubmit}
+                                formatDate={formatDate}
+                                availableTimeSlots={availableTimeSlots}
+                                submittingForm={submittingForm}
+                                submitError={submitError}
+                              />
                             </DialogContent>
                           </Dialog>
                           
@@ -1001,7 +890,6 @@ export default function DressRentalPage() {
           </div>
         </Carousel>
       </section>
-
       {/* Secondary Hero Section */}
       <section id="inicio" className="relative bg-gradient-to-br from-[#B4D8D8] via-[#E0D7CE] to-[#F9F7F5] py-24 md:py-36 overflow-hidden">
         {/* Decorative elements */}
@@ -1043,7 +931,17 @@ export default function DressRentalPage() {
                         Agenda tu visita para probarte los vestidos que más te gusten
                       </DialogDescription>
                     </DialogHeader>
-                    <AppointmentForm />
+                    <AppointmentForm 
+                      formData={formData}
+                      setFormData={setFormData}
+                      formStep={formStep}
+                      setFormStep={setFormStep}
+                      handleSubmit={handleSubmit}
+                      formatDate={formatDate}
+                      availableTimeSlots={availableTimeSlots}
+                      submittingForm={submittingForm}
+                      submitError={submitError}
+                    />
                   </DialogContent>
                 </Dialog>
                 <Button
@@ -1162,21 +1060,43 @@ export default function DressRentalPage() {
               Cada vestido ha sido cuidadosamente seleccionado para garantizar que te sientas radiante y segura en tu
               día especial.
             </p>
+            
+            {/* Indicador de carga de API */}
+            {loadingArticulos && (
+              <div className="mt-4 flex items-center justify-center gap-2 text-[#128498]">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#128498]"></div>
+              </div>
+            )}
+            
+            {/* Total de productos */}
+            {!loadingArticulos && (
+              <p className="mt-4 text-sm text-gray-500">
+                {allProducts.length} producto{allProducts.length !== 1 ? 's' : ''} disponible{allProducts.length !== 1 ? 's' : ''}
+                {articulosAPI.length > 0 && (
+                  <span className="text-[#128498] font-semibold ml-1">
+                    ({articulosAPI.length})
+                  </span>
+                )}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {["Todos", "Largos", "Cortos", "Abrigos", "Zapatos", "Accesorios", "Otros"].map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-colors ${selectedCategory === category
-                  ? /* Updated active category button to new teal */ "bg-[#128498] text-white"
-                  : "bg-white text-gray-700 hover:bg-[#B4D8D8] border border-gray-200"
-                  }`}
-              >
-                {category}
-              </button>
-            ))}
+            {categoriasDisponibles.map((category) => {
+              const count = category === "Todos" ? allProducts.length : allProducts.filter(p => p.category === category).length
+              return (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-2 rounded-full font-medium transition-colors ${selectedCategory === category
+                    ? "bg-[#128498] text-white shadow-lg"
+                    : "bg-white text-gray-700 hover:bg-[#B4D8D8] border border-gray-200"
+                    }`}
+                >
+                  {category} <span className="ml-1 text-xs opacity-75">({count})</span>
+                </button>
+              )
+            })}
           </div>
 
           {/* Vestidos Largos Section */}
@@ -1205,7 +1125,7 @@ export default function DressRentalPage() {
                           />
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {dress.badges.map((badge, idx) => (
+                            {dress.badges.map((badge: string, idx: number) => (
                               <Badge 
                                 key={idx}
                                 className={`${
@@ -1292,7 +1212,7 @@ export default function DressRentalPage() {
                           />
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {dress.badges.map((badge, idx) => (
+                            {dress.badges.map((badge: string, idx: number) => (
                               <Badge 
                                 key={idx}
                                 className={`${
@@ -1376,7 +1296,7 @@ export default function DressRentalPage() {
                           />
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {shoe.badges.map((badge, idx) => (
+                            {shoe.badges.map((badge: string, idx: number) => (
                               <Badge 
                                 key={idx}
                                 className={`${
@@ -1437,14 +1357,123 @@ export default function DressRentalPage() {
             </div>
           )}
 
-          {selectedCategory !== "Todos" &&
-            selectedCategory !== "Largos" &&
-            selectedCategory !== "Cortos" &&
-            selectedCategory !== "Zapatos" && (
-              <div className="text-center py-12">
-                <p className="text-gray-600 text-lg">Próximamente tendremos productos en esta categoría.</p>
-              </div>
-            )}
+          {/* Mostrar otras categorías dinámicamente */}
+          {Object.keys(productosPorCategoria)
+            .filter(cat => !["Largos", "Cortos", "Zapatos"].includes(cat))
+            .map(categoria => {
+              const productos = productosPorCategoria[categoria]
+              if (productos.length === 0) return null
+              if (selectedCategory !== "Todos" && selectedCategory !== categoria) return null
+              
+              // Color dinámico basado en la categoría
+              const coloresPorCategoria: { [key: string]: string } = {
+                "Abrigos": "#D4A574",
+                "Accesorios": "#C4B5A0",
+                "Otros": "#9CA3AF"
+              }
+              const colorCategoria = coloresPorCategoria[categoria] || "#6B7280"
+              
+              return (
+                <div key={categoria} className="mb-16">
+                  <div className="grid lg:grid-cols-4 gap-8 items-center">
+                    <div className="lg:col-span-1">
+                      <div className="text-white p-8 rounded-2xl text-center h-full flex flex-col justify-center" style={{ backgroundColor: colorCategoria }}>
+                        <h3 className="font-serif text-3xl font-bold mb-4">{categoria}</h3>
+                        <p className="text-2xl italic">{productos.length} productos</p>
+                        <div className="w-16 h-0.5 bg-white mx-auto mt-4"></div>
+                      </div>
+                    </div>
+                    <div className="lg:col-span-3">
+                      <div className="grid md:grid-cols-3 gap-6">
+                        {productos.map((product: any) => (
+                          <Card
+                            key={product.id}
+                            className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#128498]/20"
+                          >
+                            <div className="relative overflow-hidden">
+                              <img
+                                src={product.image || "/placeholder.svg"}
+                                alt={product.name}
+                                className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/placeholder.jpg'
+                                }}
+                              />
+                              {/* Badges */}
+                              <div className="absolute top-3 left-3 flex flex-col gap-2">
+                                {product.badges.map((badge: string, idx: number) => (
+                                  <Badge 
+                                    key={idx}
+                                    className={`${
+                                      badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
+                                      badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                      "bg-red-500 hover:bg-red-600"
+                                    } shadow-md`}
+                                  >
+                                    {badge}
+                                  </Badge>
+                                ))}
+                              </div>
+                              {/* Favorite button */}
+                              <button 
+                                onClick={() => toggleFavorite(product.id)}
+                                className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
+                              >
+                                <Heart className={`h-5 w-5 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'} transition-colors`} />
+                              </button>
+                            </div>
+                            <CardContent className="p-5">
+                              <div className="flex items-start justify-between mb-2">
+                                <h4 className="font-serif text-lg font-semibold text-gray-900">{product.name}</h4>
+                                {product.rating && (
+                                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                                    <Star className="h-3.5 w-3.5 text-yellow-500 fill-current" />
+                                    <span className="text-xs font-semibold text-gray-700">{product.rating}</span>
+                                  </div>
+                                )}
+                              </div>
+                              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+                              
+                              {product.categoriaOriginal && (
+                                <div className="mb-3">
+                                  <Badge variant="outline" className="text-xs">
+                                    {product.categoriaOriginal}
+                                  </Badge>
+                                </div>
+                              )}
+                              
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedProduct(product)
+                                      setSelectedImageIndex(0)
+                                    }}
+                                    className="w-full border-2 text-[#128498] hover:bg-[#128498] hover:text-white bg-transparent transition-all"
+                                    style={{ borderColor: colorCategoria }}
+                                  >
+                                    Ver Detalles
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden p-8">
+                                  <DialogHeader>
+                                    <DialogTitle className="sr-only">{product.name}</DialogTitle>
+                                  </DialogHeader>
+                                  <ProductDetail product={selectedProduct} />
+                                </DialogContent>
+                              </Dialog>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
         </div>
       </section>
 
@@ -1522,7 +1551,17 @@ export default function DressRentalPage() {
                     Agenda tu visita para probarte los vestidos que más te gusten
                   </DialogDescription>
                 </DialogHeader>
-                <AppointmentForm />
+                <AppointmentForm 
+                  formData={formData}
+                  setFormData={setFormData}
+                  formStep={formStep}
+                  setFormStep={setFormStep}
+                  handleSubmit={handleSubmit}
+                  formatDate={formatDate}
+                  availableTimeSlots={availableTimeSlots}
+                  submittingForm={submittingForm}
+                  submitError={submitError}
+                />
               </DialogContent>
             </Dialog>
           </div>
