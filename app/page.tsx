@@ -486,9 +486,9 @@ export default function DressRentalPage() {
                 <Badge
                   key={idx}
                   className={`${badge === "Más Popular" ? "bg-[#128498]" :
-                      badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
-                        badge === "Disponible" ? "bg-green-500" :
-                          "bg-red-500"
+                    badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
+                      badge === "Disponible" ? "bg-green-500" :
+                        "bg-red-500"
                     } shadow-lg`}
                 >
                   {badge}
@@ -676,11 +676,25 @@ export default function DressRentalPage() {
       <header className="absolute top-0 left-0 right-0 z-50 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
+            {/* Logo Secundario - Visible en mobile y desktop */}
             <div className="flex items-center">
               <img
                 src="/CMYK LOGO SECUNDARIO JPG FONDO TRANSPARENTE  HORIZONTAL VERSION NEGRO.png"
                 alt="Díaz & De Luca Logo"
-                className="h-12 md:h-16 object-contain"
+                className="h-10 md:h-16 object-contain"
+                style={{
+                  filter: 'brightness(0) invert(1)',
+                  WebkitFilter: 'brightness(0) invert(1)'
+                }}
+              />
+            </div>
+
+            {/* Logo Principal en el medio - Solo desktop */}
+            <div className="hidden md:flex items-center justify-center flex-1">
+              <img
+                src="/CMYK LOGO PRINCIPAL PNG FONDO TRANSPARENTE    VERSION COLOR.png"
+                alt="Díaz & De Luca Logo Principal"
+                className="h-16 w-16 object-contain"
                 style={{
                   filter: 'brightness(0) invert(1)',
                   WebkitFilter: 'brightness(0) invert(1)'
@@ -696,7 +710,7 @@ export default function DressRentalPage() {
                 Catálogo
               </a>
               <a href="#faq" className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase">
-                FAQ
+                Preguntas Frecuentes
               </a>
               <Dialog>
                 <DialogTrigger asChild>
@@ -738,7 +752,7 @@ export default function DressRentalPage() {
                   Catálogo
                 </a>
                 <a href="#faq" className="text-gray-700 hover:text-[#128498] transition-colors text-sm uppercase tracking-wide">
-                  FAQ
+                  Preguntas Frecuentes
                 </a>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -864,8 +878,8 @@ export default function DressRentalPage() {
                 key={index}
                 onClick={() => carouselApi?.scrollTo(index)}
                 className={`transition-all duration-300 h-1 ${currentSlide === index
-                    ? 'w-8 bg-white'
-                    : 'w-8 bg-white/30 hover:bg-white/50'
+                  ? 'w-8 bg-white'
+                  : 'w-8 bg-white/30 hover:bg-white/50'
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -884,10 +898,10 @@ export default function DressRentalPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left space-y-8">
-              <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
+              {/* <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
                 <Sparkles className="h-4 w-4 text-[#128498] mr-2" />
                 <span className="text-sm font-medium text-gray-700">Más de 10 años creando momentos especiales</span>
-              </div>
+              </div> */}
 
               <h2 className="font-serif text-5xl md:text-7xl font-bold text-[#128498] leading-tight">
                 Vestidos que
@@ -992,7 +1006,7 @@ export default function DressRentalPage() {
       <section className="bg-[#128498] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">¿Tenes una fiesta?</h3>
-          <p className="text-xl md:text-2xl text-white/90 italic">Te esperamos!</p>
+          <p className="text-xl md:text-2xl text-white/90 italic">¡Te esperamos!</p>
         </div>
       </section>
 
@@ -1104,9 +1118,9 @@ export default function DressRentalPage() {
                               <Badge
                                 key={idx}
                                 className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                    badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                        "bg-red-500 hover:bg-red-600"
+                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                      "bg-red-500 hover:bg-red-600"
                                   } shadow-md`}
                               >
                                 {badge}
@@ -1190,9 +1204,9 @@ export default function DressRentalPage() {
                               <Badge
                                 key={idx}
                                 className={`${badge === "Más Popular" ? "bg-[#AB9072] hover:bg-[#967a5f]" :
-                                    badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                        "bg-red-500 hover:bg-red-600"
+                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                      "bg-red-500 hover:bg-red-600"
                                   } shadow-md`}
                               >
                                 {badge}
@@ -1273,9 +1287,9 @@ export default function DressRentalPage() {
                               <Badge
                                 key={idx}
                                 className={`${badge === "Más Popular" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                    badge === "Nuevo" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                        "bg-red-500 hover:bg-red-600"
+                                  badge === "Nuevo" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
+                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                      "bg-red-500 hover:bg-red-600"
                                   } shadow-md`}
                               >
                                 {badge}
@@ -1377,9 +1391,9 @@ export default function DressRentalPage() {
                                   <Badge
                                     key={idx}
                                     className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                        badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                          badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                            "bg-red-500 hover:bg-red-600"
+                                      badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                        badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                          "bg-red-500 hover:bg-red-600"
                                       } shadow-md`}
                                   >
                                     {badge}
@@ -1766,9 +1780,9 @@ export default function DressRentalPage() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
               <div className="flex items-center mb-4">
-                <img 
-                  src="/CMYK LOGO SECUNDARIO JPG FONDO TRANSPARENTE  HORIZONTAL VERSION NEGRO.png" 
-                  alt="Díaz & De Luca Logo" 
+                <img
+                  src="/CMYK LOGO SECUNDARIO JPG FONDO TRANSPARENTE  HORIZONTAL VERSION NEGRO.png"
+                  alt="Díaz & De Luca Logo"
                   className="h-12 md:h-16 object-contain"
                   style={{
                     filter: 'brightness(0) saturate(100%) invert(27%) sepia(85%) saturate(1200%) hue-rotate(160deg) brightness(0.7) contrast(1.2)',
@@ -1824,7 +1838,7 @@ export default function DressRentalPage() {
                 <li>
                   <a href="#faq" className="hover:text-[#128498] transition-colors flex items-center gap-2">
                     <ChevronDown className="h-4 w-4 -rotate-90" />
-                    FAQ
+                    Preguntas Frecuentes
                   </a>
                 </li>
                 <li>
