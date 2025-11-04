@@ -660,7 +660,7 @@ export default function DressRentalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9F7F5]">
+    <div className="min-h-screen bg-white">
       <div className="fixed bottom-6 right-6 z-50">
         <a
           href="https://wa.me/1234567890"
@@ -674,41 +674,31 @@ export default function DressRentalPage() {
         </a>
       </div>
 
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      {/* Header - Minimalista estilo Toia de Kiev */}
+      <header className="absolute top-0 left-0 right-0 z-50 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <img src="/diaz-deluca-logo.jpg" alt="Díaz & De Luca Logo" className="h-16 w-16 object-contain" />
-              <h1 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">
-                <span className="text-[#128498]">Díaz &</span> <span className="text-[#128498]">De Luca</span>
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <h1 className="font-serif text-2xl md:text-3xl font-normal text-white tracking-wider">
+                Díaz & De Luca
               </h1>
             </div>
 
-            <nav className="hidden md:flex space-x-8">
-              <a href="#inicio" className="text-gray-700 hover:text-[#128498] transition-colors">
-                Inicio
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#catalogo" className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase">
+                Alquiler
               </a>
-              <a href="#catalogo" className="text-gray-700 hover:text-[#128498] transition-colors">
+              <a href="#catalogo" className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase">
                 Catálogo
               </a>
-              <a href="#faq" className="text-gray-700 hover:text-[#128498] transition-colors">
+              <a href="#faq" className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase">
                 FAQ
               </a>
-              <a href="#contacto" className="text-gray-700 hover:text-[#128498] transition-colors">
-                Contacto
-              </a>
-            </nav>
-
-            <div className="flex items-center space-x-4">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="bg-[#128498] hover:bg-[#0f6a7a] text-white">
-                    <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
-                    </svg>
-                    Agendar Cita
-                  </Button>
+                  <button className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase border border-white/30 px-4 py-2 hover:border-white/60 transition-all">
+                    Coordinar Cita
+                  </button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
@@ -727,162 +717,152 @@ export default function DressRentalPage() {
                   />
                 </DialogContent>
               </Dialog>
+            </nav>
 
-              <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                <Menu className="h-6 w-6 text-gray-700" />
-              </button>
-            </div>
+            <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <Menu className="h-6 w-6" />
+            </button>
           </div>
 
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200 py-4">
-              <nav className="flex flex-col space-y-4">
-                <a href="#inicio" className="text-gray-700 hover:text-[#128498] transition-colors">
-                  Inicio
+            <div className="md:hidden bg-white/95 backdrop-blur-md py-4 rounded-lg mt-2">
+              <nav className="flex flex-col space-y-4 px-4">
+                <a href="#catalogo" className="text-gray-700 hover:text-[#128498] transition-colors text-sm uppercase tracking-wide">
+                  Alquiler
                 </a>
-                <a href="#catalogo" className="text-gray-700 hover:text-[#128498] transition-colors">
+                <a href="#catalogo" className="text-gray-700 hover:text-[#128498] transition-colors text-sm uppercase tracking-wide">
                   Catálogo
                 </a>
-                <a href="#faq" className="text-gray-700 hover:text-[#128498] transition-colors">
+                <a href="#faq" className="text-gray-700 hover:text-[#128498] transition-colors text-sm uppercase tracking-wide">
                   FAQ
                 </a>
-                <a href="#contacto" className="text-gray-700 hover:text-[#128498] transition-colors">
-                  Contacto
-                </a>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="text-left text-gray-700 hover:text-[#128498] transition-colors text-sm uppercase tracking-wide border border-gray-300 px-4 py-2 rounded">
+                      Coordinar Cita
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                    </DialogHeader>
+                    <AppointmentForm 
+                      formData={formData}
+                      setFormData={setFormData}
+                      formStep={formStep}
+                      setFormStep={setFormStep}
+                      handleSubmit={handleSubmit}
+                      formatDate={formatDate}
+                      availableTimeSlots={availableTimeSlots}
+                      submittingForm={submittingForm}
+                      submitError={submitError}
+                    />
+                  </DialogContent>
+                </Dialog>
               </nav>
             </div>
           )}
         </div>
       </header>
 
-      {/* Hero Carousel */}
-      <section className="relative w-full">
+      {/* Hero Section Fullscreen - Estilo Toia de Kiev */}
+      <section className="relative w-full h-screen overflow-hidden">
         <Carousel 
-          className="w-full"
+          className="w-full h-screen"
           setApi={setCarouselApi}
           opts={{
             align: "start",
             loop: true,
           }}
         >
-          <CarouselContent>
+          <CarouselContent className="h-screen">
             {carouselSlides.map((slide) => (
-              <CarouselItem key={slide.id}>
-                <div className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden">
-                  {/* Background Image */}
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{ 
-                      backgroundImage: `url(${slide.image})`,
-                      backgroundPosition: 'center 30%'
-                    }}
-                  >
-                    {/* Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-r ${slide.gradient}`}></div>
-                    <div className="absolute inset-0 bg-black/20"></div>
+              <CarouselItem key={slide.id} className="h-screen">
+                <div className="relative w-full h-full min-h-screen">
+                  {/* Background Image - Fullscreen - Ocupa todo el espacio */}
+                  <div className="absolute inset-0 w-full h-full">
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full h-full object-cover object-center"
+                      style={{
+                        minWidth: '100%',
+                        minHeight: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center'
+                      }}
+                    />
+                    {/* Overlay sutil */}
+                    <div className="absolute inset-0 bg-black/10"></div>
                   </div>
 
-                  {/* Content */}
-                  <div className="relative z-10 h-full flex items-center">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                      <div className="max-w-2xl">
-                        <div className="mb-6 inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-md rounded-full">
-                          <Sparkles className="h-4 w-4 text-white mr-2" />
-                          <span className="text-sm font-medium text-white">Díaz & De Luca</span>
-                        </div>
+                  {/* Content - Centrado vertical y horizontal estilo minimalista */}
+                  <div className="relative z-10 h-full flex items-center justify-center">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
+                      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider">
+                        {slide.title}
+                      </h1>
+                      
+                      <p className="text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto">
+                        {slide.subtitle}
+                      </p>
+                      
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button className="bg-white text-gray-900 hover:bg-gray-50 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300 border border-white">
+                              {slide.cta}
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                              <DialogDescription className="text-center text-gray-600">
+                                Agenda tu visita para probarte los vestidos que más te gusten
+                              </DialogDescription>
+                            </DialogHeader>
+                            <AppointmentForm 
+                              formData={formData}
+                              setFormData={setFormData}
+                              formStep={formStep}
+                              setFormStep={setFormStep}
+                              handleSubmit={handleSubmit}
+                              formatDate={formatDate}
+                              availableTimeSlots={availableTimeSlots}
+                              submittingForm={submittingForm}
+                              submitError={submitError}
+                            />
+                          </DialogContent>
+                        </Dialog>
                         
-                        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
-                          {slide.title}
-                        </h1>
-                        
-                        <p className="text-xl md:text-2xl text-white/95 mb-8 leading-relaxed drop-shadow-lg">
-                          {slide.subtitle}
-                        </p>
-                        
-                        <div className="flex flex-col sm:flex-row gap-4">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                size="lg" 
-                                className="bg-white text-[#128498] hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all"
-                              >
-                                <CalendarIcon className="mr-2 h-5 w-5" />
-                                {slide.cta}
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
-                                <DialogDescription className="text-center text-gray-600">
-                                  Agenda tu visita para probarte los vestidos que más te gusten
-                                </DialogDescription>
-                              </DialogHeader>
-                              <AppointmentForm 
-                                formData={formData}
-                                setFormData={setFormData}
-                                formStep={formStep}
-                                setFormStep={setFormStep}
-                                handleSubmit={handleSubmit}
-                                formatDate={formatDate}
-                                availableTimeSlots={availableTimeSlots}
-                                submittingForm={submittingForm}
-                                submitError={submitError}
-                              />
-                            </DialogContent>
-                          </Dialog>
-                          
-                          <Button
-                            variant="outline"
-                            size="lg"
-                            onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="border-2 border-white text-white hover:bg-white hover:text-[#128498] px-8 py-6 text-lg font-semibold backdrop-blur-sm bg-white/10 shadow-xl"
-                          >
-                            Ver Catálogo
-                          </Button>
-                        </div>
-
-                        {/* Trust Badges */}
-                        {/* <div className="mt-12 flex flex-wrap gap-6">
-                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
-                            <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                            <span className="text-white font-semibold">4.9/5 Rating</span>
-                          </div>
-                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
-                            <Users className="h-5 w-5 text-white" />
-                            <span className="text-white font-semibold">200+ Clientas</span>
-                          </div>
-                          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg">
-                            <Award className="h-5 w-5 text-white" />
-                            <span className="text-white font-semibold">10+ Años</span>
-                          </div>
-                        </div> */}
+                        <button
+                          onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
+                          className="border border-white/50 text-white hover:border-white hover:bg-white/10 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300"
+                        >
+                          Ver Catálogo
+                        </button>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Scroll Indicator */}
-                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                    <ChevronDown className="h-8 w-8 text-white opacity-75" />
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
           
-          {/* Navigation Arrows */}
-          <CarouselPrevious className="left-4 bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white hover:text-[#128498] h-12 w-12" />
-          <CarouselNext className="right-4 bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white hover:text-[#128498] h-12 w-12" />
+          {/* Navigation Arrows - Minimalistas */}
+          <CarouselPrevious className="left-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
+          <CarouselNext className="right-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
           
-          {/* Carousel Indicators (Dots) */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {/* Carousel Indicators - Minimalistas */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => carouselApi?.scrollTo(index)}
-                className={`transition-all duration-300 rounded-full ${
+                className={`transition-all duration-300 h-1 ${
                   currentSlide === index 
-                    ? 'w-8 h-3 bg-white' 
-                    : 'w-3 h-3 bg-white/50 hover:bg-white/75'
+                    ? 'w-8 bg-white' 
+                    : 'w-8 bg-white/30 hover:bg-white/50'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
