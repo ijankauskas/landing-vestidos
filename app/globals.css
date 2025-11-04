@@ -74,8 +74,9 @@
 }
 
 @theme inline {
-  --font-serif: var(--font-playfair);
-  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-cabinet-grotesk);
+  --font-script: var(--font-pinyon-script);
 
   /* Updated custom color palette with Díaz & De Luca brand colors */
   --color-teal-dark: #128498;
@@ -228,5 +229,16 @@ img {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-cabinet-grotesk), sans-serif;
+  }
+  
+  /* Instrument Serif para títulos */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-instrument-serif), serif;
+  }
+  
+  /* Pinyon Script para acentos/destacados */
+  .font-script, [class*="script"] {
+    font-family: var(--font-pinyon-script), cursive;
   }
 }

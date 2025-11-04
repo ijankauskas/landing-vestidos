@@ -1,18 +1,31 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, DM_Sans } from "next/font/google"
+import { Instrument_Serif, Manrope, Pinyon_Script } from "next/font/google"
 import "./globals.css"
 
-const playfair = Playfair_Display({
+// Instrument Serif - Para títulos
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-playfair",
+  variable: "--font-instrument-serif",
+  weight: ["400"],
 })
 
-const dmSans = DM_Sans({
+// Manrope - Similar a Cabinet Grotesk para cuerpo de texto
+// Si tienes los archivos de Cabinet Grotesk, podemos cargarlos localmente
+const manrope = Manrope({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-dm-sans",
+  variable: "--font-cabinet-grotesk",
+  weight: ["400", "500", "600", "700"],
+})
+
+// Pinyon Script - Para acentos/destaque
+const pinyonScript = Pinyon_Script({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-pinyon-script",
+  weight: ["400"],
 })
 
 export const metadata: Metadata = {
@@ -28,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className={`${playfair.variable} ${dmSans.variable} antialiased`}>
+    <html lang="es" className={`${instrumentSerif.variable} ${manrope.variable} ${pinyonScript.variable} antialiased`}>
       <body>{children}</body>
     </html>
   )

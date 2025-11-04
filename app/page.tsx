@@ -8,8 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { 
-  Mail, Phone, MapPin, Instagram, Facebook, Heart, Star, Menu, 
+import {
+  Mail, Phone, MapPin, Instagram, Facebook, Heart, Star, Menu,
   Check, Clock, Shield, Sparkles, TrendingUp, ChevronDown, ChevronUp,
   Package, Truck, Calendar as CalendarIcon, Users, Award, Zap
 } from "lucide-react"
@@ -67,7 +67,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <p className="font-serif text-lg font-semibold text-[#128498]">{itemName}</p>
       </div>
     )}
-    
+
     {/* Progress Indicator */}
     <div className="flex items-center justify-center space-x-2">
       <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#128498] text-white' : 'bg-[#B4D8D8] text-gray-700'} font-semibold`}>
@@ -114,8 +114,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               required
             />
           </div>
-          <Button 
-            type="button" 
+          <Button
+            type="button"
             onClick={() => {
               if (formData.name && formData.phone && formData.email) {
                 setFormStep(2)
@@ -176,17 +176,17 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             />
             <p className="text-xs text-gray-500 mt-1">Solo necesario para la reserva final</p>
           </div>
-          
+
           {/* Mensaje de error */}
           {submitError && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
               {submitError}
             </div>
           )}
-          
+
           <div className="flex gap-2">
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               variant="outline"
               onClick={() => setFormStep(1)}
               className="flex-1"
@@ -194,8 +194,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             >
               <ChevronUp className="mr-2 h-4 w-4" /> Volver
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white"
               disabled={submittingForm}
             >
@@ -237,12 +237,12 @@ export default function DressRentalPage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  
+
   // Estados para artículos de la API
   const [articulosAPI, setArticulosAPI] = useState<any[]>([])
   const [loadingArticulos, setLoadingArticulos] = useState(true)
   const [errorArticulos, setErrorArticulos] = useState<string | null>(null)
-  
+
   // Estados para el formulario de cita
   const [submittingForm, setSubmittingForm] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -279,14 +279,14 @@ export default function DressRentalPage() {
       try {
         setLoadingArticulos(true)
         setErrorArticulos(null)
-        
+
         const response = await getArticulosPublicos(1, 50) // Obtener hasta 50 artículos
-        
+
         // Convertir artículos de la API al formato del componente
         const productosConvertidos = response.data.map(convertirArticuloAProducto)
-        
+
         setArticulosAPI(productosConvertidos)
-        
+
         console.log(`✅ ${response.data.length} artículos cargados desde la API`)
       } catch (error) {
         console.error("❌ Error cargando artículos desde la API:", error)
@@ -327,7 +327,7 @@ export default function DressRentalPage() {
     }
   ]
 
-  const availableTimeSlots = ["10:00","10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"]
+  const availableTimeSlots = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"]
 
   const formatDate = (date: Date | undefined) => {
     if (!date) return "Selecciona una fecha"
@@ -341,7 +341,7 @@ export default function DressRentalPage() {
   }
 
   const toggleFavorite = (id: number) => {
-    setFavorites(prev => 
+    setFavorites(prev =>
       prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
     )
   }
@@ -352,23 +352,23 @@ export default function DressRentalPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Validar que tengamos todos los datos necesarios
     if (!formData.name || !formData.email || !formData.date || !formData.time) {
       setSubmitError("Por favor completa todos los campos requeridos")
       return
     }
-    
+
     setSubmittingForm(true)
     setSubmitError(null)
-    
+
     try {
       // Separar nombre y apellido
       const { nombre, apellido } = separarNombreCompleto(formData.name)
-      
+
       // Formatear fecha
       const fechaFormateada = formatearFechaAPI(formData.date)
-      
+
       // Preparar datos para el API
       const leadData = {
         nombre,
@@ -380,16 +380,16 @@ export default function DressRentalPage() {
         fecha: fechaFormateada,
         horario: formData.time,
       }
-      
+
       console.log("Enviando lead:", leadData)
-      
+
       // Enviar a la API
       const response = await crearLeadPublico(leadData)
-      
+
       if (response.success) {
         // Éxito
         alert("¡Solicitud de cita enviada exitosamente! Te contactaremos pronto.")
-        
+
         // Limpiar formulario
         setFormData({ name: "", phone: "", email: "", dni: "", date: undefined, time: "" })
         setFormStep(1)
@@ -437,10 +437,10 @@ export default function DressRentalPage() {
 
   // Todos los productos vienen de la API
   const allProducts = [...articulosAPI]
-  
+
   // Obtener categorías únicas de los artículos
   const categoriasDisponibles = ["Todos", ...Array.from(new Set(allProducts.map(p => p.category)))]
-  
+
   // Filtrar productos por categoría seleccionada
   const filteredProducts =
     selectedCategory === "Todos" ? allProducts : allProducts.filter((product) => product.category === selectedCategory)
@@ -453,7 +453,7 @@ export default function DressRentalPage() {
     }
     productosPorCategoria[product.category].push(product)
   })
-  
+
   // Para compatibilidad con el código existente
   const longDresses = productosPorCategoria["Largos"] || []
   const shortDresses = productosPorCategoria["Cortos"] || []
@@ -479,18 +479,17 @@ export default function DressRentalPage() {
             >
               <Heart className={`h-6 w-6 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
             </button>
-            
+
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.badges.map((badge: string, idx: number) => (
-                <Badge 
+                <Badge
                   key={idx}
-                  className={`${
-                    badge === "Más Popular" ? "bg-[#128498]" :
-                    badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
-                    badge === "Disponible" ? "bg-green-500" :
-                    "bg-red-500"
-                  } shadow-lg`}
+                  className={`${badge === "Más Popular" ? "bg-[#128498]" :
+                      badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
+                        badge === "Disponible" ? "bg-green-500" :
+                          "bg-red-500"
+                    } shadow-lg`}
                 >
                   {badge}
                 </Badge>
@@ -501,7 +500,7 @@ export default function DressRentalPage() {
             {product.images.length > 1 && (
               <>
                 <button
-                  onClick={() => setSelectedImageIndex((prev: number) => 
+                  onClick={() => setSelectedImageIndex((prev: number) =>
                     prev > 0 ? prev - 1 : product.images.length - 1
                   )}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
@@ -509,7 +508,7 @@ export default function DressRentalPage() {
                   <ChevronDown className="h-5 w-5 rotate-90 text-gray-800" />
                 </button>
                 <button
-                  onClick={() => setSelectedImageIndex((prev: number) => 
+                  onClick={() => setSelectedImageIndex((prev: number) =>
                     prev < product.images.length - 1 ? prev + 1 : 0
                   )}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
@@ -527,9 +526,8 @@ export default function DressRentalPage() {
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIndex(idx)}
-                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
-                    selectedImageIndex === idx ? 'border-[#128498] shadow-lg scale-105' : 'border-gray-200 hover:border-gray-400'
-                  }`}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${selectedImageIndex === idx ? 'border-[#128498] shadow-lg scale-105' : 'border-gray-200 hover:border-gray-400'
+                    }`}
                 >
                   <img
                     src={image}
@@ -627,7 +625,7 @@ export default function DressRentalPage() {
                     Agenda tu cita para probarte este artículo
                   </DialogDescription>
                 </DialogHeader>
-                <AppointmentForm 
+                <AppointmentForm
                   itemName={product.name}
                   formData={formData}
                   setFormData={setFormData}
@@ -641,7 +639,7 @@ export default function DressRentalPage() {
                 />
               </DialogContent>
             </Dialog>
-            
+
             <a
               href="https://wa.me/1234567890"
               target="_blank"
@@ -679,9 +677,15 @@ export default function DressRentalPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <h1 className="font-serif text-2xl md:text-3xl font-normal text-white tracking-wider">
-                Díaz & De Luca
-              </h1>
+              <img
+                src="/CMYK LOGO SECUNDARIO JPG FONDO TRANSPARENTE  HORIZONTAL VERSION NEGRO.png"
+                alt="Díaz & De Luca Logo"
+                className="h-12 md:h-16 object-contain"
+                style={{
+                  filter: 'brightness(0) invert(1)',
+                  WebkitFilter: 'brightness(0) invert(1)'
+                }}
+              />
             </div>
 
             <nav className="hidden md:flex items-center space-x-8">
@@ -704,7 +708,7 @@ export default function DressRentalPage() {
                   <DialogHeader>
                     <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
                   </DialogHeader>
-                  <AppointmentForm 
+                  <AppointmentForm
                     formData={formData}
                     setFormData={setFormData}
                     formStep={formStep}
@@ -746,7 +750,7 @@ export default function DressRentalPage() {
                     <DialogHeader>
                       <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
                     </DialogHeader>
-                    <AppointmentForm 
+                    <AppointmentForm
                       formData={formData}
                       setFormData={setFormData}
                       formStep={formStep}
@@ -767,7 +771,7 @@ export default function DressRentalPage() {
 
       {/* Hero Section Fullscreen - Estilo Toia de Kiev */}
       <section className="relative w-full h-screen overflow-hidden">
-        <Carousel 
+        <Carousel
           className="w-full h-screen"
           setApi={setCarouselApi}
           opts={{
@@ -802,11 +806,11 @@ export default function DressRentalPage() {
                       <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider">
                         {slide.title}
                       </h1>
-                      
+
                       <p className="text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto">
                         {slide.subtitle}
                       </p>
-                      
+
                       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <Dialog>
                           <DialogTrigger asChild>
@@ -821,7 +825,7 @@ export default function DressRentalPage() {
                                 Agenda tu visita para probarte los vestidos que más te gusten
                               </DialogDescription>
                             </DialogHeader>
-                            <AppointmentForm 
+                            <AppointmentForm
                               formData={formData}
                               setFormData={setFormData}
                               formStep={formStep}
@@ -834,7 +838,7 @@ export default function DressRentalPage() {
                             />
                           </DialogContent>
                         </Dialog>
-                        
+
                         <button
                           onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
                           className="border border-white/50 text-white hover:border-white hover:bg-white/10 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300"
@@ -848,22 +852,21 @@ export default function DressRentalPage() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          
+
           {/* Navigation Arrows - Minimalistas */}
           <CarouselPrevious className="left-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
           <CarouselNext className="right-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
-          
+
           {/* Carousel Indicators - Minimalistas */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => carouselApi?.scrollTo(index)}
-                className={`transition-all duration-300 h-1 ${
-                  currentSlide === index 
-                    ? 'w-8 bg-white' 
+                className={`transition-all duration-300 h-1 ${currentSlide === index
+                    ? 'w-8 bg-white'
                     : 'w-8 bg-white/30 hover:bg-white/50'
-                }`}
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
@@ -877,7 +880,7 @@ export default function DressRentalPage() {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#128498]/5 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#A1D0B2]/5 rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left space-y-8">
@@ -885,17 +888,17 @@ export default function DressRentalPage() {
                 <Sparkles className="h-4 w-4 text-[#128498] mr-2" />
                 <span className="text-sm font-medium text-gray-700">Más de 10 años creando momentos especiales</span>
               </div>
-              
-              <h2 className="font-serif text-5xl md:text-7xl font-bold text-gray-900 leading-tight">
-                Vestidos que 
-                <span className="italic block text-gray-700">cuentan</span>
+
+              <h2 className="font-serif text-5xl md:text-7xl font-bold text-[#128498] leading-tight">
+                Vestidos que
+                <span className="italic block text-[#128498]">cuentan</span>
                 <span className="text-[#128498] block">historias</span>
               </h2>
-              
+
               <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl">
-                Descubre nuestra exclusiva colección de vestidos y complementos. Tu elegancia comienza aquí.
+                Descubre nuestra exclusiva colección de vestidos y accesorios. Tu elegancia comienza aquí.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Dialog>
                   <DialogTrigger asChild>
@@ -911,7 +914,7 @@ export default function DressRentalPage() {
                         Agenda tu visita para probarte los vestidos que más te gusten
                       </DialogDescription>
                     </DialogHeader>
-                    <AppointmentForm 
+                    <AppointmentForm
                       formData={formData}
                       setFormData={setFormData}
                       formStep={formStep}
@@ -933,13 +936,13 @@ export default function DressRentalPage() {
                   Ver Catálogo
                 </Button>
               </div>
-              
+
               {/* Trust indicators */}
               <div className="flex flex-wrap gap-6 justify-center lg:justify-start pt-4">
                 <div className="flex items-center gap-2">
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Check className="h-5 w-5 text-green-600" />
-            </div>
+                  </div>
                   <span className="text-sm text-gray-600">Calidad Premium</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -956,12 +959,12 @@ export default function DressRentalPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="relative z-10">
-              <img
-                src="/elegant-woman-evening-dress.png"
-                alt="Mujer elegante en vestido de fiesta"
+                <img
+                  src="/elegant-woman-evening-dress.png"
+                  alt="Mujer elegante en vestido de fiesta"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
               </div>
@@ -969,8 +972,8 @@ export default function DressRentalPage() {
                 <div className="flex items-center space-x-3">
                   <div className="flex -space-x-2">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#128498] to-[#A1D0B2] flex items-center justify-center text-white font-bold">5</div>
-                  <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                </div>
+                    <Star className="h-5 w-5 text-yellow-500 fill-current" />
+                  </div>
                   <div>
                     <p className="font-bold text-gray-900">4.9/5</p>
                     <p className="text-sm text-gray-600">+200 clientas</p>
@@ -988,8 +991,8 @@ export default function DressRentalPage() {
 
       <section className="bg-[#128498] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">¿Tienes una fiesta?</h3>
-          <p className="text-xl md:text-2xl text-white/90 italic">¿Querés estar divina?</p>
+          <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">¿Tenes una fiesta?</h3>
+          <p className="text-xl md:text-2xl text-white/90 italic">Te esperamos!</p>
         </div>
       </section>
 
@@ -1004,15 +1007,7 @@ export default function DressRentalPage() {
               <h3 className="font-serif text-xl font-semibold text-gray-900 mb-2">Amplia Colección</h3>
               <p className="text-gray-600">Vestidos y complementos para cada ocasión especial</p>
             </div>
-            
-            <div className="text-center group">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#A1D0B2] to-[#8cb899] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Truck className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="font-serif text-xl font-semibold text-gray-900 mb-2">Envíos Disponibles</h3>
-              <p className="text-gray-600">Recibí tu vestido donde estés</p>
-            </div>
-            
+
             <div className="text-center group">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#AB9072] to-[#967a5f] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="h-8 w-8 text-white" />
@@ -1020,7 +1015,7 @@ export default function DressRentalPage() {
               <h3 className="font-serif text-xl font-semibold text-gray-900 mb-2">Arreglos Express</h3>
               <p className="text-gray-600">Ajustes profesionales disponibles</p>
             </div>
-            
+
             <div className="text-center group">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#B4D8D8] to-[#9bc2c2] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Users className="h-8 w-8 text-white" />
@@ -1040,14 +1035,14 @@ export default function DressRentalPage() {
               Cada vestido ha sido cuidadosamente seleccionado para garantizar que te sientas radiante y segura en tu
               día especial.
             </p>
-            
+
             {/* Indicador de carga de API */}
             {loadingArticulos && (
               <div className="mt-4 flex items-center justify-center gap-2 text-[#128498]">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#128498]"></div>
               </div>
             )}
-            
+
             {/* Total de productos */}
             {!loadingArticulos && (
               <p className="mt-4 text-sm text-gray-500">
@@ -1106,21 +1101,20 @@ export default function DressRentalPage() {
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
                             {dress.badges.map((badge: string, idx: number) => (
-                              <Badge 
+                              <Badge
                                 key={idx}
-                                className={`${
-                                  badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                  badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                  "bg-red-500 hover:bg-red-600"
-                                } shadow-md`}
+                                className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
+                                    badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                        "bg-red-500 hover:bg-red-600"
+                                  } shadow-md`}
                               >
                                 {badge}
                               </Badge>
                             ))}
                           </div>
                           {/* Favorite button */}
-                          <button 
+                          <button
                             onClick={() => toggleFavorite(dress.id)}
                             className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
                           >
@@ -1193,21 +1187,20 @@ export default function DressRentalPage() {
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
                             {dress.badges.map((badge: string, idx: number) => (
-                              <Badge 
+                              <Badge
                                 key={idx}
-                                className={`${
-                                  badge === "Más Popular" ? "bg-[#AB9072] hover:bg-[#967a5f]" :
-                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                  badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                  "bg-red-500 hover:bg-red-600"
-                                } shadow-md`}
+                                className={`${badge === "Más Popular" ? "bg-[#AB9072] hover:bg-[#967a5f]" :
+                                    badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                        "bg-red-500 hover:bg-red-600"
+                                  } shadow-md`}
                               >
                                 {badge}
                               </Badge>
                             ))}
                           </div>
                           {/* Favorite button */}
-                          <button 
+                          <button
                             onClick={() => toggleFavorite(dress.id)}
                             className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
                           >
@@ -1277,21 +1270,20 @@ export default function DressRentalPage() {
                           {/* Badges */}
                           <div className="absolute top-3 left-3 flex flex-col gap-2">
                             {shoe.badges.map((badge: string, idx: number) => (
-                              <Badge 
+                              <Badge
                                 key={idx}
-                                className={`${
-                                  badge === "Más Popular" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                  badge === "Nuevo" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                  badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                  "bg-red-500 hover:bg-red-600"
-                                } shadow-md`}
+                                className={`${badge === "Más Popular" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                    badge === "Nuevo" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
+                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                        "bg-red-500 hover:bg-red-600"
+                                  } shadow-md`}
                               >
                                 {badge}
                               </Badge>
                             ))}
                           </div>
                           {/* Favorite button */}
-                          <button 
+                          <button
                             onClick={() => toggleFavorite(shoe.id)}
                             className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
                           >
@@ -1344,7 +1336,7 @@ export default function DressRentalPage() {
               const productos = productosPorCategoria[categoria]
               if (productos.length === 0) return null
               if (selectedCategory !== "Todos" && selectedCategory !== categoria) return null
-              
+
               // Color dinámico basado en la categoría
               const coloresPorCategoria: { [key: string]: string } = {
                 "Abrigos": "#D4A574",
@@ -1352,7 +1344,7 @@ export default function DressRentalPage() {
                 "Otros": "#9CA3AF"
               }
               const colorCategoria = coloresPorCategoria[categoria] || "#6B7280"
-              
+
               return (
                 <div key={categoria} className="mb-16">
                   <div className="grid lg:grid-cols-4 gap-8 items-center">
@@ -1382,21 +1374,20 @@ export default function DressRentalPage() {
                               {/* Badges */}
                               <div className="absolute top-3 left-3 flex flex-col gap-2">
                                 {product.badges.map((badge: string, idx: number) => (
-                                  <Badge 
+                                  <Badge
                                     key={idx}
-                                    className={`${
-                                      badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                      badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                      badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                      "bg-red-500 hover:bg-red-600"
-                                    } shadow-md`}
+                                    className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
+                                        badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
+                                          badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
+                                            "bg-red-500 hover:bg-red-600"
+                                      } shadow-md`}
                                   >
                                     {badge}
                                   </Badge>
                                 ))}
                               </div>
                               {/* Favorite button */}
-                              <button 
+                              <button
                                 onClick={() => toggleFavorite(product.id)}
                                 className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
                               >
@@ -1414,7 +1405,7 @@ export default function DressRentalPage() {
                                 )}
                               </div>
                               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
-                              
+
                               {product.categoriaOriginal && (
                                 <div className="mb-3">
                                   <Badge variant="outline" className="text-xs">
@@ -1422,7 +1413,7 @@ export default function DressRentalPage() {
                                   </Badge>
                                 </div>
                               )}
-                              
+
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button
@@ -1487,7 +1478,7 @@ export default function DressRentalPage() {
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#128498] rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
                 </div>
                 <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probate Vestidos</h3>
-                <p className="text-gray-600">Vení con un acompañante y probate todos los que quieras.</p>
+                <p className="text-gray-600">Probate todos los que quieras.</p>
               </div>
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
@@ -1498,8 +1489,8 @@ export default function DressRentalPage() {
                   <Check className="h-10 w-10 text-white" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#A1D0B2] rounded-full flex items-center justify-center text-gray-900 font-bold text-sm">3</div>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Elegí y Reservá</h3>
-                <p className="text-gray-600">Seleccioná tu favorito y dejá una seña para reservarlo.</p>
+                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Elegí</h3>
+                <p className="text-gray-600">Seleccioná tu favorito.</p>
               </div>
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
@@ -1531,7 +1522,7 @@ export default function DressRentalPage() {
                     Agenda tu visita para probarte los vestidos que más te gusten
                   </DialogDescription>
                 </DialogHeader>
-                <AppointmentForm 
+                <AppointmentForm
                   formData={formData}
                   setFormData={setFormData}
                   formStep={formStep}
@@ -1549,7 +1540,7 @@ export default function DressRentalPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gradient-to-br from-[#B4D8D8]/20 to-[#E0D7CE]/20">
+      {/* <section className="py-20 bg-gradient-to-br from-[#B4D8D8]/20 to-[#E0D7CE]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Lo que Dicen Nuestras Clientas</h2>
@@ -1606,7 +1597,7 @@ export default function DressRentalPage() {
             <p className="text-gray-600">Tu satisfacción es nuestra prioridad</p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1654,11 +1645,10 @@ export default function DressRentalPage() {
                 a: "Sí, podés comprarlo siempre que no tenga reservas posteriores. Consultanos disponibilidad."
               }
             ].map((faq, index) => (
-              <Card 
+              <Card
                 key={index}
-                className={`overflow-hidden transition-all duration-300 ${
-                  expandedFaq === index ? 'border-2 border-[#128498] shadow-lg' : 'border-2 border-transparent hover:border-gray-200'
-                }`}
+                className={`overflow-hidden transition-all duration-300 ${expandedFaq === index ? 'border-2 border-[#128498] shadow-lg' : 'border-2 border-transparent hover:border-gray-200'
+                  }`}
               >
                 <button
                   onClick={() => toggleFaq(index)}
@@ -1666,21 +1656,20 @@ export default function DressRentalPage() {
                 >
                   <h3 className="font-serif text-lg md:text-xl font-semibold text-gray-900 pr-4">
                     {faq.q}
-              </h3>
+                  </h3>
                   <div className={`flex-shrink-0 transition-transform duration-300 ${expandedFaq === index ? 'rotate-180' : ''}`}>
                     <ChevronDown className="h-6 w-6 text-[#128498]" />
                   </div>
                 </button>
-                <div 
-                  className={`overflow-hidden transition-all duration-300 ${
-                    expandedFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${expandedFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <div className="px-6 pb-6">
                     <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                   </div>
                 </div>
-            </Card>
+              </Card>
             ))}
 
             <Card className="p-6 bg-gradient-to-r from-[#B4D8D8] to-[#E0D7CE] border-2 border-[#128498]/20 mt-8">
@@ -1690,7 +1679,7 @@ export default function DressRentalPage() {
                 </div>
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-[#128498] mb-1">¡Te esperamos!</h3>
-              <p className="text-gray-700">Estamos aquí para hacer de tu evento algo inolvidable.</p>
+                  <p className="text-gray-700">Estamos aquí para hacer de tu evento algo inolvidable.</p>
                 </div>
               </div>
             </Card>
@@ -1776,34 +1765,36 @@ export default function DressRentalPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/diaz-deluca-logo.jpg" alt="Logo" className="h-12 w-12 rounded-lg" />
-                <h3 className="font-serif text-2xl font-bold">
-                  Díaz <span className="text-[#128498]">&</span> De Luca
-              </h3>
+              <div className="flex items-center mb-4">
+                <img 
+                  src="/CMYK LOGO SECUNDARIO JPG FONDO TRANSPARENTE  HORIZONTAL VERSION NEGRO.png" 
+                  alt="Díaz & De Luca Logo" 
+                  className="h-12 md:h-16 object-contain"
+                  style={{
+                    filter: 'brightness(0) saturate(100%) invert(27%) sepia(85%) saturate(1200%) hue-rotate(160deg) brightness(0.7) contrast(1.2)',
+                    WebkitFilter: 'brightness(0) saturate(100%) invert(27%) sepia(85%) saturate(1200%) hue-rotate(160deg) brightness(0.7) contrast(1.2)'
+                  }}
+                />
               </div>
-              <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
-                Más de 10 años creando momentos inolvidables. Tu elegancia es nuestra pasión. Vestidos de alta calidad para cada ocasión especial.
-              </p>
               <div className="flex space-x-4">
-                <a 
-                  href="https://www.instagram.com/" 
+                <a
+                  href="https://www.instagram.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-[#128498] hover:text-white transition-all"
                 >
                   <Instagram className="h-5 w-5" />
                 </a>
-                <a 
-                  href="https://www.facebook.com/" 
+                <a
+                  href="https://www.facebook.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-[#128498] hover:text-white transition-all"
                 >
                   <Facebook className="h-5 w-5" />
                 </a>
-                <a 
-                  href="https://wa.me/1234567890" 
+                <a
+                  href="https://wa.me/1234567890"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-green-500 hover:text-white transition-all"
