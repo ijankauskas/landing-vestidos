@@ -174,7 +174,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
               placeholder="12345678"
             />
-            <p className="text-xs text-gray-500 mt-1">Solo necesario para la reserva final</p>
+            <p className="text-xs text-gray-500 mt-1">Solo necesario para la reservá final</p>
           </div>
 
           {/* Mensaje de error */}
@@ -622,7 +622,7 @@ export default function DressRentalPage() {
                     Reservar {product.name}
                   </DialogTitle>
                   <DialogDescription className="text-center text-gray-600">
-                    Agenda tu cita para probarte este artículo
+                    Agendá tu cita para probarte este artículo
                   </DialogDescription>
                 </DialogHeader>
                 <AppointmentForm
@@ -689,19 +689,6 @@ export default function DressRentalPage() {
               />
             </div>
 
-            {/* Logo Principal en el medio - Solo desktop */}
-            <div className="hidden md:flex items-center justify-center flex-1">
-              <img
-                src="/CMYK LOGO PRINCIPAL PNG FONDO TRANSPARENTE    VERSION COLOR.png"
-                alt="Díaz & De Luca Logo Principal"
-                className="h-16 w-16 object-contain"
-                style={{
-                  filter: 'brightness(0) invert(1)',
-                  WebkitFilter: 'brightness(0) invert(1)'
-                }}
-              />
-            </div>
-
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#catalogo" className="text-white hover:text-white/80 transition-colors text-sm font-light tracking-wide uppercase">
                 Alquiler
@@ -720,7 +707,7 @@ export default function DressRentalPage() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                    <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
                   </DialogHeader>
                   <AppointmentForm
                     formData={formData}
@@ -762,7 +749,7 @@ export default function DressRentalPage() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                      <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
                     </DialogHeader>
                     <AppointmentForm
                       formData={formData}
@@ -834,9 +821,9 @@ export default function DressRentalPage() {
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                              <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                              <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
                               <DialogDescription className="text-center text-gray-600">
-                                Agenda tu visita para probarte los vestidos que más te gusten
+                                Agendá tu visita para probarte los vestidos que más te gusten
                               </DialogDescription>
                             </DialogHeader>
                             <AppointmentForm
@@ -923,9 +910,9 @@ export default function DressRentalPage() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                      <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
                       <DialogDescription className="text-center text-gray-600">
-                        Agenda tu visita para probarte los vestidos que más te gusten
+                        Agendá tu visita para probarte los vestidos que más te gusten
                       </DialogDescription>
                     </DialogHeader>
                     <AppointmentForm
@@ -969,7 +956,7 @@ export default function DressRentalPage() {
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Clock className="h-5 w-5 text-[#A1D0B2]" />
                   </div>
-                  <span className="text-sm text-gray-600">Reserva Flexible</span>
+                  <span className="text-sm text-gray-600">Reservá Flexible</span>
                 </div>
               </div>
             </div>
@@ -1005,7 +992,7 @@ export default function DressRentalPage() {
 
       <section className="bg-[#128498] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">¿Tenes una fiesta?</h3>
+          <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">¿Tenés una fiesta?</h3>
           <p className="text-xl md:text-2xl text-white/90 italic">¡Te esperamos!</p>
         </div>
       </section>
@@ -1468,7 +1455,7 @@ export default function DressRentalPage() {
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">¿Cómo Funciona?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Alquilar tu vestido perfecto es más fácil de lo que imaginas
+              Alquilar tu vestido perfecto es más fácil de lo que imaginás
             </p>
           </div>
 
@@ -1479,8 +1466,8 @@ export default function DressRentalPage() {
                   <CalendarIcon className="h-10 w-10 text-white" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#A1D0B2] rounded-full flex items-center justify-center text-gray-900 font-bold text-sm">1</div>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Agenda tu Cita</h3>
-                <p className="text-gray-600">Reserva tu visita online o por WhatsApp. Elegí día y horario.</p>
+                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Agendá tu Cita</h3>
+                <p className="text-gray-600">Reservá tu visita online o por WhatsApp. Elegí día y horario.</p>
               </div>
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
@@ -1491,8 +1478,8 @@ export default function DressRentalPage() {
                   <Sparkles className="h-10 w-10 text-white" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#128498] rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probate Vestidos</h3>
-                <p className="text-gray-600">Probate todos los que quieras.</p>
+                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probáte Vestidos</h3>
+                <p className="text-gray-600">Probáte todos los que quieras.</p>
               </div>
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
@@ -1516,7 +1503,7 @@ export default function DressRentalPage() {
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#AB9072] rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
                 </div>
                 <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Disfrutá tu Evento</h3>
-                <p className="text-gray-600">Retiralo 2 días antes y devolvelo hasta 3 días después.</p>
+                <p className="text-gray-600">Retirálo 2 días antes y devolvélo hasta 3 días después.</p>
               </div>
             </div>
           </div>
@@ -1531,9 +1518,9 @@ export default function DressRentalPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="font-serif text-2xl text-center">Reserva tu Cita</DialogTitle>
+                  <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
                   <DialogDescription className="text-center text-gray-600">
-                    Agenda tu visita para probarte los vestidos que más te gusten
+                    Agendá tu visita para probarte los vestidos que más te gusten
                   </DialogDescription>
                 </DialogHeader>
                 <AppointmentForm
@@ -1656,7 +1643,7 @@ export default function DressRentalPage() {
               },
               {
                 q: "¿Puedo comprar el vestido que alquilé?",
-                a: "Sí, podés comprarlo siempre que no tenga reservas posteriores. Consultanos disponibilidad."
+                a: "Sí, podés comprarlo siempre que no tenga reservas posteriores. Consultános disponibilidad."
               }
             ].map((faq, index) => (
               <Card
@@ -1705,7 +1692,7 @@ export default function DressRentalPage() {
       <section id="contacto" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contactanos</h2>
+            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contáctanos</h2>
             <p className="text-lg text-gray-600">Estamos aquí para hacer realidad el vestido de tus sueños</p>
           </div>
 
@@ -1756,7 +1743,7 @@ export default function DressRentalPage() {
             Recibí Novedades y Ofertas Exclusivas
           </h3>
           <p className="text-lg text-white/90 mb-8">
-            Suscribite a nuestro newsletter y enterate de nuevos vestidos y promociones especiales
+            Suscribíte a nuestro newsletter y enteráte de nuevos vestidos y promociones especiales
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <Input
