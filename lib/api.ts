@@ -16,21 +16,50 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 /**
- * Obtiene todos los artículos públicos con paginación
- * @param page - Número de página (default: 1)
- * @param limit - Límite de resultados por página (default: 10)
+ * Opciones de paginación y filtros para artículos
+ */
+export interface ArticulosOptions {
+  page?: number
+  limit?: number
+  search?: string
+  sort?: string
+  order?: 'asc' | 'desc'
+}
+
+/**
+ * Obtiene todos los artículos públicos con paginación y filtros
+ * @param options - Opciones de paginación, búsqueda y ordenamiento
  */
 export async function getArticulosPublicos(
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  options?: ArticulosOptions
 ): Promise<ArticulosResponse> {
   try {
-    const url = `${API_BASE_URL}articulos/public/todos?apiKey=ecom_1_919f89353fb94505252c3e084fbf7c46`
+    // Construir URL con parámetros de query
+    const params = new URLSearchParams({
+      apiKey: API_KEY,
+      page: String(options?.page || page),
+      limit: String(options?.limit || limit),
+    })
+
+    // Agregar parámetros opcionales si existen
+    if (options?.search) {
+      params.append('search', options.search)
+    }
+    if (options?.sort) {
+      params.append('sort', options.sort)
+    }
+    if (options?.order) {
+      params.append('order', options.order)
+    }
+
+    const url = `${API_BASE_URL}articulos/public/todos?${params.toString()}`
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": "ecom_1_919f89353fb94505252c3e084fbf7c46"
+        "X-API-Key": API_KEY
       },
       // Opcional: agregar caché para mejorar performance
       next: { revalidate: 60 }, // Revalidar cada 60 segundos

@@ -1074,10 +1074,19 @@ export default function DressRentalPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mx-auto text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Nuestra Colección</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
               Cada vestido ha sido cuidadosamente seleccionado para garantizar que te sientas radiante y segura en tu
               día especial.
             </p>
+            <a 
+              href="/articulos"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-[#128498] hover:bg-[#0f6a7a] text-white rounded-lg font-semibold transition-all hover:shadow-lg"
+            >
+              Ver Catálogo Completo
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
 
             {/* Indicador de carga de API */}
             {loadingArticulos && (
