@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +10,7 @@ import { Heart, Star, Search, ChevronLeft, ChevronRight, Filter, X } from "lucid
 import { getArticulosPublicos, convertirArticuloAProducto, type ArticulosOptions } from "@/lib/api"
 import { ProductDetailModal } from "@/components/product-detail-modal"
 
-export default function ArticulosPage() {
+function ArticulosContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -418,5 +418,21 @@ export default function ArticulosPage() {
         )}
       </div>
     </div>
+  )
+}
+
+// Wrapper con Suspense para useSearchParams
+export default function ArticulosPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-[#128498]"></div>
+          <p className="mt-6 text-gray-600 text-lg">Cargando artículos...</p>
+        </div>
+    </div>
+    }>
+      <ArticulosContent />
+    </Suspense>
   )
 }
