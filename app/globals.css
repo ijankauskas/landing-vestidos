@@ -147,6 +147,105 @@ html {
   animation-delay: 150ms;
 }
 
+/* Ken Burns Effect - Slow zoom and pan */
+@keyframes kenburns-top {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1.15) translateY(-15px);
+  }
+}
+
+@keyframes kenburns-bottom {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1.15) translateY(15px);
+  }
+}
+
+@keyframes kenburns-left {
+  0% {
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    transform: scale(1.15) translateX(-15px);
+  }
+}
+
+@keyframes kenburns-right {
+  0% {
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    transform: scale(1.15) translateX(15px);
+  }
+}
+
+/* Fade transition for carousel */
+@keyframes carousel-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.carousel-image-animate {
+  animation: kenburns-top 10s ease-out forwards;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.carousel-image-animate-alt {
+  animation: kenburns-bottom 10s ease-out forwards;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Text animations for carousel - slide up and fade */
+@keyframes text-slide-up-in {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes text-slide-up-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+}
+
+.carousel-text-enter {
+  animation: text-slide-up-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.carousel-text-exit {
+  animation: text-slide-up-out 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Delay for subtitle */
+.carousel-text-delay-1 {
+  animation-delay: 0.15s;
+}
+
+.carousel-text-delay-2 {
+  animation-delay: 0.3s;
+}
+
 /* Line clamp utility */
 .line-clamp-2 {
   display: -webkit-box;
@@ -155,19 +254,68 @@ html {
   overflow: hidden;
 }
 
-/* Carousel transitions */
+/* Carousel transitions - Fade effect style for hero carousel */
 .embla {
   overflow: hidden;
+  position: relative;
 }
 
 .embla__container {
   display: flex;
-  transition: transform 0.5s ease-in-out;
+  /* Use a very slow transform that looks like a fade */
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .embla__slide {
   flex: 0 0 100%;
   min-width: 0;
+  position: relative;
+}
+
+/* Hero carousel specific - create fade effect by transitioning opacity of slide content */
+[data-carousel="hero"] .embla__slide {
+  opacity: 0;
+  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+[data-carousel="hero"] .embla__slide.is-selected {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Ensure smooth crossfade between slides */
+[data-carousel="hero"] .embla__container {
+  transition: transform 0.01s;
+}
+
+/* Smooth fade transition for slide changes */
+@keyframes hero-slide-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-slide-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Apply fade animation to active slide */
+.hero-carousel-slide-active {
+  animation: hero-slide-fade-in 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-carousel-slide-inactive {
+  animation: hero-slide-fade-out 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Smooth image load */

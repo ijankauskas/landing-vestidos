@@ -16,7 +16,6 @@ import {
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { getArticulosPublicos, convertirArticuloAProducto, crearLeadPublico, separarNombreCompleto, formatearFechaAPI } from "@/lib/api"
 import type { Articulo } from "@/types/articulo"
 
@@ -233,7 +232,6 @@ export default function DressRentalPage() {
   const [formStep, setFormStep] = useState(1)
   const [favorites, setFavorites] = useState<number[]>([])
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
-  const [carouselApi, setCarouselApi] = useState<any>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -247,31 +245,16 @@ export default function DressRentalPage() {
   const [submittingForm, setSubmittingForm] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  // Autoplay del carousel
+  // Autoplay del carousel - Pure fade implementation
   useEffect(() => {
-    if (!carouselApi) return
-
-    // Actualizar slide actual cuando cambia
-    const onSelect = () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap())
-    }
-
-    carouselApi.on('select', onSelect)
-    onSelect() // Llamar inicialmente
-
     const intervalId = setInterval(() => {
-      if (carouselApi.canScrollNext()) {
-        carouselApi.scrollNext()
-      } else {
-        carouselApi.scrollTo(0)
-      }
-    }, 5000) // Cambia cada 5 segundos
+      setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))
+    }, 10000) // Cambia cada 10 segundos para coincidir con la animación Ken Burns
 
     return () => {
       clearInterval(intervalId)
-      carouselApi.off('select', onSelect)
     }
-  }, [carouselApi])
+  }, [])
 
   // Cargar artículos de la API
   useEffect(() => {
@@ -770,109 +753,144 @@ export default function DressRentalPage() {
         </div>
       </header>
 
-      {/* Hero Section Fullscreen - Estilo Toia de Kiev */}
+      {/* Hero Section Fullscreen - Estilo Toia de Kiev - Fade Carousel */}
       <section className="relative w-full h-screen overflow-hidden">
-        <Carousel
-          className="w-full h-screen"
-          setApi={setCarouselApi}
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-        >
-          <CarouselContent className="h-screen">
-            {carouselSlides.map((slide) => (
-              <CarouselItem key={slide.id} className="h-screen">
-                <div className="relative w-full h-full min-h-screen">
-                  {/* Background Image - Fullscreen - Ocupa todo el espacio */}
-                  <div className="absolute inset-0 w-full h-full">
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="w-full h-full object-cover object-center"
-                      style={{
-                        minWidth: '100%',
-                        minHeight: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center'
-                      }}
-                    />
-                    {/* Overlay sutil */}
-                    <div className="absolute inset-0 bg-black/10"></div>
-                  </div>
+        {/* Slides container - absolute positioning for pure fade effect */}
+        <div className="relative w-full h-screen">
+          {carouselSlides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 w-full h-screen transition-opacity duration-[1500ms] ease-in-out ${
+                currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
+            >
+              <div className="relative w-full h-full">
+                {/* Background Image - Fullscreen con Ken Burns Effect */}
+                <div className="absolute inset-0 w-full h-full overflow-hidden">
+                  <img
+                    key={`carousel-image-${slide.id}-${currentSlide}`}
+                    src={slide.image}
+                    alt={slide.title}
+                    className={`w-full h-full object-cover object-center ${
+                      currentSlide === index 
+                        ? index % 2 === 0 
+                          ? 'carousel-image-animate' 
+                          : 'carousel-image-animate-alt'
+                        : ''
+                    }`}
+                    style={{
+                      minWidth: '100%',
+                      minHeight: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center'
+                    }}
+                  />
+                  {/* Overlay sutil */}
+                  <div className="absolute inset-0 bg-black/10"></div>
+                </div>
 
-                  {/* Content - Centrado vertical y horizontal estilo minimalista */}
-                  <div className="relative z-10 h-full flex items-center justify-center">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
-                      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider">
-                        {slide.title}
-                      </h1>
+                {/* Content - Centrado vertical y horizontal estilo minimalista */}
+                <div className="relative z-10 h-full flex items-center justify-center">
+                  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
+                    <h1 
+                      key={`title-${slide.id}-${currentSlide}`}
+                      className={`font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider ${
+                        currentSlide === index ? 'carousel-text-enter' : ''
+                      }`}
+                    >
+                      {slide.title}
+                    </h1>
 
-                      <p className="text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto">
-                        {slide.subtitle}
-                      </p>
+                    <p 
+                      key={`subtitle-${slide.id}-${currentSlide}`}
+                      className={`text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto ${
+                        currentSlide === index ? 'carousel-text-enter carousel-text-delay-1' : ''
+                      }`}
+                    >
+                      {slide.subtitle}
+                    </p>
 
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <button className="bg-white text-gray-900 hover:bg-gray-50 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300 border border-white">
-                              {slide.cta}
-                            </button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
-                              <DialogDescription className="text-center text-gray-600">
-                                Agendá tu visita para probarte los vestidos que más te gusten
-                              </DialogDescription>
-                            </DialogHeader>
-                            <AppointmentForm
-                              formData={formData}
-                              setFormData={setFormData}
-                              formStep={formStep}
-                              setFormStep={setFormStep}
-                              handleSubmit={handleSubmit}
-                              formatDate={formatDate}
-                              availableTimeSlots={availableTimeSlots}
-                              submittingForm={submittingForm}
-                              submitError={submitError}
-                            />
-                          </DialogContent>
-                        </Dialog>
+                    <div 
+                      key={`buttons-${slide.id}-${currentSlide}`}
+                      className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${
+                        currentSlide === index ? 'carousel-text-enter carousel-text-delay-2' : ''
+                      }`}
+                    >
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button className="bg-white text-gray-900 hover:bg-gray-50 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300 border border-white">
+                            {slide.cta}
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle className="font-serif text-2xl text-center">Reservá tu Cita</DialogTitle>
+                            <DialogDescription className="text-center text-gray-600">
+                              Agendá tu visita para probarte los vestidos que más te gusten
+                            </DialogDescription>
+                          </DialogHeader>
+                          <AppointmentForm
+                            formData={formData}
+                            setFormData={setFormData}
+                            formStep={formStep}
+                            setFormStep={setFormStep}
+                            handleSubmit={handleSubmit}
+                            formatDate={formatDate}
+                            availableTimeSlots={availableTimeSlots}
+                            submittingForm={submittingForm}
+                            submitError={submitError}
+                          />
+                        </DialogContent>
+                      </Dialog>
 
-                        <button
-                          onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
-                          className="border border-white/50 text-white hover:border-white hover:bg-white/10 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300"
-                        >
-                          Explorar Colección
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="border border-white/50 text-white hover:border-white hover:bg-white/10 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300"
+                      >
+                        Explorar Colección
+                      </button>
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          {/* Navigation Arrows - Minimalistas */}
-          <CarouselPrevious className="left-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
-          <CarouselNext className="right-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 opacity-0 hover:opacity-100 transition-opacity" />
+        {/* Navigation Arrows - Minimalistas */}
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev === 0 ? carouselSlides.length - 1 : prev - 1))}
+          className="absolute left-8 top-1/2 -translate-y-1/2 z-30 bg-transparent border border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
+          aria-label="Previous slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))}
+          className="absolute right-8 top-1/2 -translate-y-1/2 z-30 bg-transparent border border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
+          aria-label="Next slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
 
-          {/* Carousel Indicators - Minimalistas */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-            {carouselSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => carouselApi?.scrollTo(index)}
-                className={`transition-all duration-300 h-1 ${currentSlide === index
-                  ? 'w-8 bg-white'
-                  : 'w-8 bg-white/30 hover:bg-white/50'
-                  }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </Carousel>
+        {/* Carousel Indicators - Minimalistas */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {carouselSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`transition-all duration-300 h-1 ${currentSlide === index
+                ? 'w-8 bg-white'
+                : 'w-8 bg-white/30 hover:bg-white/50'
+                }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </section>
       {/* Secondary Hero Section */}
       <section id="inicio" className="relative bg-gradient-to-br from-[#B4D8D8] via-[#E0D7CE] to-[#F9F7F5] py-24 md:py-36 overflow-hidden">
