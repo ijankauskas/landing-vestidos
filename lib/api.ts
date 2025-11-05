@@ -1,7 +1,7 @@
 import type { ArticulosResponse, Articulo } from "@/types/articulo"
 
 // Obtener la URL base de la API desde variables de entorno
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
 const API_KEY = "ecom_1_919f89353fb94505252c3e084fbf7c46"
 
 /**
@@ -25,7 +25,7 @@ export async function getArticulosPublicos(
   limit: number = 10
 ): Promise<ArticulosResponse> {
   try {
-    const url = `${API_BASE_URL}/articulos/public/todos?apiKey=ecom_1_919f89353fb94505252c3e084fbf7c46`
+    const url = `${API_BASE_URL}articulos/public/todos?apiKey=ecom_1_919f89353fb94505252c3e084fbf7c46`
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -206,7 +206,7 @@ export async function crearLeadPublico(
   leadData: CreateLeadPublicDto
 ): Promise<LeadResponse> {
   try {
-    const url = `${API_BASE_URL}/lead/public`
+    const url = `${API_BASE_URL}lead/public`
     const response = await fetch(url, {
       method: "POST",
       headers: {
