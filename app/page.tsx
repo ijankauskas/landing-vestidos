@@ -314,7 +314,7 @@ export default function DressRentalPage() {
       image: "/mar_1.jpg",
       title: "Encuentra Tu Vestido Perfecto",
       subtitle: "Más de 100 diseños exclusivos disponibles",
-      cta: "Ver Catálogo",
+      cta: "Reservar Cita",
       gradient: "from-[#AB9072]/80 via-[#AB9072]/60 to-transparent"
     },
     {
@@ -322,7 +322,7 @@ export default function DressRentalPage() {
       image: "/mar_3.jpg",
       title: "Brilla en Tu Evento",
       subtitle: "Colección Premium 2025",
-      cta: "Explorar Colección",
+      cta: "Reservar Cita",
       gradient: "from-[#A1D0B2]/80 via-[#A1D0B2]/60 to-transparent"
     }
   ]
@@ -857,7 +857,7 @@ export default function DressRentalPage() {
                           onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
                           className="border border-white/50 text-white hover:border-white hover:bg-white/10 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300"
                         >
-                          Ver Catálogo
+                          Explorar Colección
                         </button>
                       </div>
                     </div>
@@ -906,11 +906,11 @@ export default function DressRentalPage() {
               <h2 className="font-serif text-5xl md:text-7xl font-bold text-[#128498] leading-tight">
                 Vestidos que
                 <span className="italic block text-[#128498]">cuentan</span>
-                <span className="text-[#128498] block">historias</span>
+                <span className="text-[#128498] block">historias...</span>
               </h2>
 
               <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl">
-                Descubre nuestra exclusiva colección de vestidos y accesorios. Tu elegancia comienza aquí.
+                Descubrí  nuestra exclusiva colección de vestidos y accesorios. Tu elegancia comienza aquí.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -947,7 +947,7 @@ export default function DressRentalPage() {
                   onClick={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })}
                   className="border-2 border-[#128498] text-[#128498] hover:bg-[#128498]/10 px-8 py-4 text-lg bg-white/80 backdrop-blur-sm"
                 >
-                  Ver Catálogo
+                  Explorar Colección
                 </Button>
               </div>
 
@@ -1011,18 +1011,18 @@ export default function DressRentalPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white mx-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group">
+          <div className="flex flex-wrap justify-center gap-8">
+            <div className="text-center group w-full sm:w-80">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#128498] to-[#0f6a7a] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Package className="h-8 w-8 text-white" />
               </div>
               <h3 className="font-serif text-xl font-semibold text-gray-900 mb-2">Amplia Colección</h3>
-              <p className="text-gray-600">Vestidos y complementos para cada ocasión especial</p>
+              <p className="text-gray-600">Vestidos y accesorios para cada ocasión especial</p>
             </div>
 
-            <div className="text-center group">
+            <div className="text-center group w-full sm:w-80">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#AB9072] to-[#967a5f] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="h-8 w-8 text-white" />
               </div>
@@ -1030,7 +1030,7 @@ export default function DressRentalPage() {
               <p className="text-gray-600">Ajustes profesionales disponibles</p>
             </div>
 
-            <div className="text-center group">
+            <div className="text-center group w-full sm:w-80">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#B4D8D8] to-[#9bc2c2] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Users className="h-8 w-8 text-white" />
               </div>
@@ -1043,7 +1043,7 @@ export default function DressRentalPage() {
 
       <section id="catalogo" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="mx-auto text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Nuestra Colección</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Cada vestido ha sido cuidadosamente seleccionado para garantizar que te sientas radiante y segura en tu
@@ -1070,7 +1070,7 @@ export default function DressRentalPage() {
             )}
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="flex flex-wrap justify-center gap-4 mb-12 items-center">
             {categoriasDisponibles.map((category) => {
               const count = category === "Todos" ? allProducts.length : allProducts.filter(p => p.category === category).length
               return (
@@ -1705,7 +1705,7 @@ export default function DressRentalPage() {
       <section id="contacto" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contáctanos</h2>
+            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contactanos</h2>
             <p className="text-lg text-gray-600">Estamos aquí para hacer realidad el vestido de tus sueños</p>
           </div>
 
@@ -1714,11 +1714,11 @@ export default function DressRentalPage() {
               <MapPin className="h-12 w-12 text-[#128498] mx-auto mb-4" />
               <h3 className="font-serif text-xl font-semibold mb-2">Ubicación</h3>
               <p className="text-gray-600">
-                Av. Elegancia 123
+                Helguera 2691 PB C
                 <br />
-                Centro, Ciudad
+                Ciudad de buenos aires
                 <br />
-                CP 12345
+                CP 1417 CQI
               </p>
             </Card>
 
