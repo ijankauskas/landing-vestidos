@@ -233,6 +233,7 @@ export default function DressRentalPage() {
   const [favorites, setFavorites] = useState<number[]>([])
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [previousSlide, setPreviousSlide] = useState<number | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
@@ -248,13 +249,14 @@ export default function DressRentalPage() {
   // Autoplay del carousel - Pure fade implementation
   useEffect(() => {
     const intervalId = setInterval(() => {
+      setPreviousSlide(currentSlide)
       setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))
     }, 10000) // Cambia cada 10 segundos para coincidir con la animación Ken Burns
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [])
+  }, [currentSlide])
 
   // Cargar artículos de la API
   useEffect(() => {
@@ -760,29 +762,30 @@ export default function DressRentalPage() {
           {carouselSlides.map((slide, index) => (
             <div
               key={slide.id}
-              className={`absolute inset-0 w-full h-screen transition-opacity duration-[1500ms] ease-in-out ${
+              className={`absolute inset-0 w-full h-screen transition-opacity duration-[2500ms] ${
                 currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
               }`}
+              style={{
+                transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
             >
               <div className="relative w-full h-full">
                 {/* Background Image - Fullscreen con Ken Burns Effect */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <img
-                    key={`carousel-image-${slide.id}-${currentSlide}`}
                     src={slide.image}
                     alt={slide.title}
                     className={`w-full h-full object-cover object-center ${
-                      currentSlide === index 
-                        ? index % 2 === 0 
-                          ? 'carousel-image-animate' 
-                          : 'carousel-image-animate-alt'
-                        : ''
+                      index % 2 === 0 
+                        ? 'carousel-image-animate' 
+                        : 'carousel-image-animate-alt'
                     }`}
                     style={{
                       minWidth: '100%',
                       minHeight: '100%',
                       objectFit: 'cover',
-                      objectPosition: 'center'
+                      objectPosition: 'center',
+                      animationDelay: `${index * -3}s`
                     }}
                   />
                   {/* Overlay sutil */}
@@ -795,7 +798,11 @@ export default function DressRentalPage() {
                     <h1 
                       key={`title-${slide.id}-${currentSlide}`}
                       className={`font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider ${
-                        currentSlide === index ? 'carousel-text-enter' : ''
+                        currentSlide === index 
+                          ? 'carousel-text-enter' 
+                          : previousSlide === index 
+                            ? 'carousel-text-exit' 
+                            : 'opacity-0'
                       }`}
                     >
                       {slide.title}
@@ -804,7 +811,11 @@ export default function DressRentalPage() {
                     <p 
                       key={`subtitle-${slide.id}-${currentSlide}`}
                       className={`text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto ${
-                        currentSlide === index ? 'carousel-text-enter carousel-text-delay-1' : ''
+                        currentSlide === index 
+                          ? 'carousel-text-enter carousel-text-delay-1' 
+                          : previousSlide === index 
+                            ? 'carousel-text-exit carousel-text-delay-1' 
+                            : 'opacity-0'
                       }`}
                     >
                       {slide.subtitle}
@@ -813,7 +824,11 @@ export default function DressRentalPage() {
                     <div 
                       key={`buttons-${slide.id}-${currentSlide}`}
                       className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${
-                        currentSlide === index ? 'carousel-text-enter carousel-text-delay-2' : ''
+                        currentSlide === index 
+                          ? 'carousel-text-enter carousel-text-delay-2' 
+                          : previousSlide === index 
+                            ? 'carousel-text-exit carousel-text-delay-2' 
+                            : 'opacity-0'
                       }`}
                     >
                       <Dialog>
@@ -859,7 +874,10 @@ export default function DressRentalPage() {
 
         {/* Navigation Arrows - Minimalistas */}
         <button
-          onClick={() => setCurrentSlide((prev) => (prev === 0 ? carouselSlides.length - 1 : prev - 1))}
+          onClick={() => {
+            setPreviousSlide(currentSlide)
+            setCurrentSlide((prev) => (prev === 0 ? carouselSlides.length - 1 : prev - 1))
+          }}
           className="absolute left-8 top-1/2 -translate-y-1/2 z-30 bg-transparent border border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
           aria-label="Previous slide"
         >
@@ -868,7 +886,10 @@ export default function DressRentalPage() {
           </svg>
         </button>
         <button
-          onClick={() => setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))}
+          onClick={() => {
+            setPreviousSlide(currentSlide)
+            setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))
+          }}
           className="absolute right-8 top-1/2 -translate-y-1/2 z-30 bg-transparent border border-white/30 text-white hover:bg-white/10 hover:border-white h-12 w-12 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
           aria-label="Next slide"
         >
@@ -882,7 +903,10 @@ export default function DressRentalPage() {
           {carouselSlides.map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentSlide(index)}
+              onClick={() => {
+                setPreviousSlide(currentSlide)
+                setCurrentSlide(index)
+              }}
               className={`transition-all duration-300 h-1 ${currentSlide === index
                 ? 'w-8 bg-white'
                 : 'w-8 bg-white/30 hover:bg-white/50'

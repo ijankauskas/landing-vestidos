@@ -147,10 +147,13 @@ html {
   animation-delay: 150ms;
 }
 
-/* Ken Burns Effect - Slow zoom and pan */
+/* Ken Burns Effect - Slow zoom and pan with smoother easing */
 @keyframes kenburns-top {
   0% {
     transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.08) translateY(-8px);
   }
   100% {
     transform: scale(1.15) translateY(-15px);
@@ -160,6 +163,9 @@ html {
 @keyframes kenburns-bottom {
   0% {
     transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.08) translateY(8px);
   }
   100% {
     transform: scale(1.15) translateY(15px);
@@ -195,15 +201,17 @@ html {
 }
 
 .carousel-image-animate {
-  animation: kenburns-top 10s ease-out forwards;
+  animation: kenburns-top 30s ease-in-out infinite;
   transform-origin: center center;
   will-change: transform;
+  animation-play-state: running;
 }
 
 .carousel-image-animate-alt {
-  animation: kenburns-bottom 10s ease-out forwards;
+  animation: kenburns-bottom 30s ease-in-out infinite;
   transform-origin: center center;
   will-change: transform;
+  animation-play-state: running;
 }
 
 /* Text animations for carousel - slide up and fade */
@@ -230,20 +238,22 @@ html {
 }
 
 .carousel-text-enter {
-  animation: text-slide-up-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: text-slide-up-in 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
 }
 
 .carousel-text-exit {
-  animation: text-slide-up-out 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: text-slide-up-out 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 1;
 }
 
-/* Delay for subtitle */
+/* Delay for subtitle and buttons */
 .carousel-text-delay-1 {
-  animation-delay: 0.15s;
+  animation-delay: 0.2s;
 }
 
 .carousel-text-delay-2 {
-  animation-delay: 0.3s;
+  animation-delay: 0.4s;
 }
 
 /* Line clamp utility */
