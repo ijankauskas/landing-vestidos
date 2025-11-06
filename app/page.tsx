@@ -1582,9 +1582,9 @@ export default function DressRentalPage() {
                   <Sparkles className="h-10 w-10 text-white" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#128498] rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probáte Vestidos</h3>
-                <p className="text-gray-600">Probáte todos los que quieras.</p>
-              </div>
+                <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probate Vestidos</h3>
+                <p className="text-gray-600">Probate todos los que quieras.</p>
+              </div>Devolvelo
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
 
@@ -1817,7 +1817,7 @@ export default function DressRentalPage() {
               <Phone className="h-12 w-12 text-[#128498] mx-auto mb-4" />
               <h3 className="font-serif text-xl font-semibold mb-2">Teléfono</h3>
               <p className="text-gray-600">
-                +1 (555) 123-4567
+                11 5110-1658
                 <br />
                 Lun - Vie: 10:00 - 20:00
                 <br />
