@@ -259,6 +259,7 @@ export default function DressRentalPage() {
   const [previousSlide, setPreviousSlide] = useState<number | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [carouselModalOpen, setCarouselModalOpen] = useState(false)
 
   // Estados para artículos de la API
   const [articulosAPI, setArticulosAPI] = useState<any[]>([])
@@ -270,7 +271,13 @@ export default function DressRentalPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   // Autoplay del carousel - Pure fade implementation
+  // Se pausa cuando el modal está abierto
   useEffect(() => {
+    // No ejecutar autoplay si el modal está abierto
+    if (carouselModalOpen) {
+      return
+    }
+
     const intervalId = setInterval(() => {
       setPreviousSlide(currentSlide)
       setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1))
@@ -279,7 +286,7 @@ export default function DressRentalPage() {
     return () => {
       clearInterval(intervalId)
     }
-  }, [currentSlide])
+  }, [currentSlide, carouselModalOpen])
 
   // Cargar artículos de la API
   useEffect(() => {
@@ -884,7 +891,7 @@ export default function DressRentalPage() {
                             : 'opacity-0'
                       }`}
                     >
-                      <Dialog>
+                      <Dialog open={carouselModalOpen} onOpenChange={setCarouselModalOpen}>
                         <DialogTrigger asChild>
                           <button className="bg-white text-gray-900 hover:bg-gray-50 px-8 py-4 text-sm font-light tracking-wider uppercase transition-all duration-300 border border-white">
                             {slide.cta}
@@ -1831,7 +1838,7 @@ export default function DressRentalPage() {
               <p className="text-gray-600">
                 diazdeluca2691@gmail.com 
                 <br />
-                Respuesta en 24h
+                Respuesta en 24hs
               </p>
             </Card>
           </div>
