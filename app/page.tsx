@@ -58,8 +58,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   availableTimeSlots,
   submittingForm,
   submitError,
-}) => (
-  <div className="space-y-6">
+}) => {
+  const [calendarOpen, setCalendarOpen] = useState(false)
+
+  return (
+    <div className="space-y-6">
     {itemName && (
       <div className="bg-[#B4D8D8]/20 p-4 rounded-lg text-center">
         <p className="text-sm text-gray-600">Reservando cita para probar:</p>
@@ -129,7 +132,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <>
           <div>
             <Label>Fecha de la Cita</Label>
-            <Popover>
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -140,7 +143,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 <Calendar
                   mode="single"
                   selected={formData.date}
-                  onSelect={(date) => setFormData({ ...formData, date })}
+                  onSelect={(date) => {
+                    // Limpiar el horario cuando cambia la fecha
+                    setFormData({ ...formData, date, time: "" })
+                    // Cerrar el Popover cuando se selecciona una fecha
+                    setCalendarOpen(false)
+                  }}
                   disabled={(date) => date < new Date() || date.getDay() === 0}
                   initialFocus
                 />
@@ -154,19 +162,33 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               id="time"
               value={formData.time}
               onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498] disabled:bg-gray-100 disabled:cursor-not-allowed"
               required
+              disabled={!formData.date || availableTimeSlots.length === 0}
             >
-              <option value="">Selecciona un horario</option>
+              <option value="">
+                {!formData.date 
+                  ? "Primero selecciona una fecha" 
+                  : availableTimeSlots.length === 0 
+                    ? "No hay horarios disponibles" 
+                    : "Selecciona un horario"}
+              </option>
               {availableTimeSlots.map((slot) => (
                 <option key={slot} value={slot}>
                   {slot} hs
                 </option>
               ))}
             </select>
+            {formData.date && availableTimeSlots.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1">
+                {formData.date.getDay() === 6 
+                  ? "Sábado: 10:00 a 14:00 hs" 
+                  : "Lunes a Viernes: 10:00 a 20:00 hs"}
+              </p>
+            )}
           </div>
           <div>
-            <Label htmlFor="dni">DNI (opcional)</Label>
+            <Label htmlFor="dni">DNI</Label>
             <Input
               id="dni"
               value={formData.dni}
@@ -215,7 +237,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       )}
     </form>
   </div>
-)
+  )
+}
 
 export default function DressRentalPage() {
   const [formData, setFormData] = useState({
@@ -297,7 +320,7 @@ export default function DressRentalPage() {
     {
       id: 2,
       image: "/mar_1.jpg",
-      title: "Encuentra Tu Vestido Perfecto",
+      title: "Encontrá Tu Vestido Perfecto",
       subtitle: "Más de 100 diseños exclusivos disponibles",
       cta: "Reservar Cita",
       gradient: "from-[#AB9072]/80 via-[#AB9072]/60 to-transparent"
@@ -305,14 +328,44 @@ export default function DressRentalPage() {
     {
       id: 3,
       image: "/mar_3.jpg",
-      title: "Brilla en Tu Evento",
+      title: "Brillá en Tu Evento",
       subtitle: "Colección Premium 2025",
       cta: "Reservar Cita",
       gradient: "from-[#A1D0B2]/80 via-[#A1D0B2]/60 to-transparent"
     }
   ]
 
-  const availableTimeSlots = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"]
+  // Función para generar horarios disponibles según el día de la semana
+  const getAvailableTimeSlots = (date: Date | undefined): string[] => {
+    if (!date) return []
+    
+    const dayOfWeek = date.getDay() // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    
+    // Sábado: 10:00 a 14:00 (cada 30 minutos)
+    if (dayOfWeek === 6) {
+      const slots: string[] = []
+      for (let hour = 10; hour < 14; hour++) {
+        slots.push(`${hour.toString().padStart(2, '0')}:00`)
+        slots.push(`${hour.toString().padStart(2, '0')}:30`)
+      }
+      return slots
+    }
+    
+    // Lunes a Viernes: 10:00 a 20:00 (cada 30 minutos)
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      const slots: string[] = []
+      for (let hour = 10; hour < 20; hour++) {
+        slots.push(`${hour.toString().padStart(2, '0')}:00`)
+        slots.push(`${hour.toString().padStart(2, '0')}:30`)
+      }
+      return slots
+    }
+    
+    // Domingo: no hay horarios disponibles
+    return []
+  }
+
+  const availableTimeSlots = getAvailableTimeSlots(formData.date)
 
   const formatDate = (date: Date | undefined) => {
     if (!date) return "Selecciona una fecha"
@@ -986,19 +1039,19 @@ export default function DressRentalPage() {
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Check className="h-5 w-5 text-green-600" />
                   </div>
-                  <span className="text-sm text-gray-600">Calidad Premium</span>
+                  <span className="text-sm text-gray-600">PRIMERA CALIDAD</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Shield className="h-5 w-5 text-[#128498]" />
                   </div>
-                  <span className="text-sm text-gray-600">Servicio Confiable</span>
+                  <span className="text-sm text-gray-600">SERVICIO CONFIABLE</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="bg-white p-2 rounded-lg shadow-sm">
                     <Clock className="h-5 w-5 text-[#A1D0B2]" />
                   </div>
-                  <span className="text-sm text-gray-600">Reservá Flexible</span>
+                  <span className="text-sm text-gray-600">RESERVA FLEXIBLE</span>
                 </div>
               </div>
             </div>
@@ -1082,7 +1135,7 @@ export default function DressRentalPage() {
               href="/articulos"
               className="inline-flex items-center gap-2 px-8 py-3 bg-[#128498] hover:bg-[#0f6a7a] text-white rounded-lg font-semibold transition-all hover:shadow-lg"
             >
-              Ver Catálogo Completo
+              Ver Catálogo
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -1554,7 +1607,7 @@ export default function DressRentalPage() {
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#AB9072] rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
                 </div>
                 <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Disfrutá tu Evento</h3>
-                <p className="text-gray-600">Retirálo 2 días antes y devolvélo hasta 3 días después.</p>
+                <p className="text-gray-600">Retiralo 2 días antes y devolvélo hasta 3 días después.</p>
               </div>
             </div>
           </div>
@@ -1743,7 +1796,7 @@ export default function DressRentalPage() {
       <section id="contacto" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contáctanos</h2>
+            <h2 className="font-serif text-3xl md:text-5xl font-bold text-gray-900 mb-4">Contactanos</h2>
             <p className="text-lg text-gray-600">Estamos aquí para hacer realidad el vestido de tus sueños</p>
           </div>
 
@@ -1766,9 +1819,9 @@ export default function DressRentalPage() {
               <p className="text-gray-600">
                 +1 (555) 123-4567
                 <br />
-                Lun - Sáb: 10:00 - 19:00
+                Lun - Vie: 10:00 - 20:00
                 <br />
-                Dom: 12:00 - 17:00
+                Sab: 10:00 - 14:00
               </p>
             </Card>
 
@@ -1776,9 +1829,7 @@ export default function DressRentalPage() {
               <Mail className="h-12 w-12 text-[#128498] mx-auto mb-4" />
               <h3 className="font-serif text-xl font-semibold mb-2">Email</h3>
               <p className="text-gray-600">
-                info@diazdeluca.com
-                <br />
-                reservas@diazdeluca.com
+                diazdeluca2691@gmail.com 
                 <br />
                 Respuesta en 24h
               </p>
@@ -1794,7 +1845,7 @@ export default function DressRentalPage() {
             Recibí Novedades y Ofertas Exclusivas
           </h3>
           <p className="text-lg text-white/90 mb-8">
-            Suscribíte a nuestro newsletter y enteráte de nuevos vestidos y promociones especiales
+            Suscribíte a nuestro newsletter y enterate de nuevos vestidos y promociones especiales
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <Input
