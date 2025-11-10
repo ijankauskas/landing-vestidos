@@ -1599,7 +1599,7 @@ export default function DressRentalPage() {
                 </div>
                 <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Probate Vestidos</h3>
                 <p className="text-gray-600">Probate todos los que quieras.</p>
-              </div>Devolvelo
+              </div>
               <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-[#B4D8D8]"></div>
             </div>
 
@@ -1622,7 +1622,7 @@ export default function DressRentalPage() {
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#AB9072] rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
                 </div>
                 <h3 className="font-serif text-xl font-semibold text-gray-900 mb-3">Disfrutá tu Evento</h3>
-                <p className="text-gray-600">Retiralo 2 días antes y devolvélo hasta 3 días después.</p>
+                <p className="text-gray-600">Retiralo 2 días antes y devolvelo hasta 3 días después.</p>
               </div>
             </div>
           </div>
