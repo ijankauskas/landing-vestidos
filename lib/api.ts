@@ -2,6 +2,7 @@ import type { ArticulosResponse, Articulo } from "@/types/articulo"
 
 // Obtener la URL base de la API desde variables de entorno
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
+// const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
 const API_KEY = "ecom_1_919f89353fb94505252c3e084fbf7c46"
 
 /**
@@ -129,11 +130,22 @@ export async function getArticulosPorCategoria(
 export function getArticuloImages(articulo: Articulo): string[] {
   const images: string[] = []
   
-  if (articulo.imagenPrincipal) images.push(articulo.imagenPrincipal)
-  if (articulo.imagen2) images.push(articulo.imagen2)
-  if (articulo.imagen3) images.push(articulo.imagen3)
-  if (articulo.imagen4) images.push(articulo.imagen4)
-  if (articulo.imagen5) images.push(articulo.imagen5)
+  // Solo agregar imágenes que no sean null, undefined o vacías
+  if (articulo.imagenPrincipal && articulo.imagenPrincipal.trim() !== '') {
+    images.push(articulo.imagenPrincipal)
+  }
+  if (articulo.imagen2 && articulo.imagen2.trim() !== '') {
+    images.push(articulo.imagen2)
+  }
+  if (articulo.imagen3 && articulo.imagen3.trim() !== '') {
+    images.push(articulo.imagen3)
+  }
+  if (articulo.imagen4 && articulo.imagen4.trim() !== '') {
+    images.push(articulo.imagen4)
+  }
+  if (articulo.imagen5 && articulo.imagen5.trim() !== '') {
+    images.push(articulo.imagen5)
+  }
   
   // Si no hay imágenes, usar placeholder
   if (images.length === 0) {

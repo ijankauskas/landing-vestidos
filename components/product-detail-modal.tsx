@@ -43,6 +43,11 @@ export function ProductDetailModal({
 
   if (!product) return null
 
+  // Filtrar imágenes válidas (no null, undefined o vacías)
+  const validImages = product.images 
+    ? product.images.filter((img: string) => img && img.trim() !== '') 
+    : []
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -59,7 +64,7 @@ export function ProductDetailModal({
             {/* Imagen Principal */}
             <div className="relative w-full lg:max-h-[68vh] max-h-[50vh] rounded-2xl overflow-hidden bg-gray-100 shadow-xl flex items-center justify-center">
               <img
-                src={product.images?.[selectedImageIndex] || product.image}
+                src={validImages[selectedImageIndex] || product.image}
                 alt={product.name}
                 className="w-full h-auto lg:max-h-[68vh] max-h-[50vh] object-contain"
               />
@@ -87,11 +92,11 @@ export function ProductDetailModal({
               </div>
 
               {/* Navegación de imágenes */}
-              {product.images && product.images.length > 1 && (
+              {validImages.length > 1 && (
                 <>
                   <button
                     onClick={() => setSelectedImageIndex((prev: number) =>
-                      prev > 0 ? prev - 1 : product.images.length - 1
+                      prev > 0 ? prev - 1 : validImages.length - 1
                     )}
                     className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
                   >
@@ -99,7 +104,7 @@ export function ProductDetailModal({
                   </button>
                   <button
                     onClick={() => setSelectedImageIndex((prev: number) =>
-                      prev < product.images.length - 1 ? prev + 1 : 0
+                      prev < validImages.length - 1 ? prev + 1 : 0
                     )}
                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
                   >
@@ -109,15 +114,18 @@ export function ProductDetailModal({
               )}
             </div>
 
-            {/* Miniaturas */}
-            {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
-                {product.images.map((image: string, idx: number) => (
+            {/* Miniaturas - Solo mostrar si hay más de 1 imagen válida */}
+            {validImages.length > 1 && (
+              <div className="flex flex-wrap gap-3 max-w-md mx-auto justify-center">
+                {validImages.map((image: string, idx: number) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${selectedImageIndex === idx ? 'border-[#128498] shadow-lg scale-105' : 'border-gray-200 hover:border-gray-400'
-                      }`}
+                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-105 flex-shrink-0 ${
+                      selectedImageIndex === idx 
+                        ? 'border-[#128498] shadow-lg scale-105' 
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
                   >
                     <img
                       src={image}
