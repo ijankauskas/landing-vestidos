@@ -1820,7 +1820,7 @@ export default function DressRentalPage() {
               </div>
               <div className="flex space-x-4">
                 <a
-                  href="https://www.instagram.com/"
+                  href="https://www.instagram.com/diazdeluca.ok?igsh=MTEwcXIxejdhNWQ2ag%3D%3D"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-[#128498] hover:text-white transition-all"
