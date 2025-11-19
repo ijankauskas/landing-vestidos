@@ -530,22 +530,6 @@ export default function DressRentalPage() {
               <Heart className={`h-6 w-6 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
             </button>
 
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {product.badges.map((badge: string, idx: number) => (
-                <Badge
-                  key={idx}
-                  className={`${badge === "Más Popular" ? "bg-[#128498]" :
-                    badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
-                      badge === "Disponible" ? "bg-green-500" :
-                        "bg-red-500"
-                    } shadow-lg`}
-                >
-                  {badge}
-                </Badge>
-              ))}
-            </div>
-
             {/* Navegación de imágenes */}
             {validImages.length > 1 && (
               <>
@@ -1218,21 +1202,6 @@ export default function DressRentalPage() {
                             alt={dress.name}
                             className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
                           />
-                          {/* Badges */}
-                          <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {dress.badges.map((badge: string, idx: number) => (
-                              <Badge
-                                key={idx}
-                                className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                      "bg-red-500 hover:bg-red-600"
-                                  } shadow-md`}
-                              >
-                                {badge}
-                              </Badge>
-                            ))}
-                          </div>
                           {/* Favorite button */}
                           <button
                             onClick={() => toggleFavorite(dress.id)}
@@ -1304,21 +1273,6 @@ export default function DressRentalPage() {
                             alt={dress.name}
                             className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
                           />
-                          {/* Badges */}
-                          <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {dress.badges.map((badge: string, idx: number) => (
-                              <Badge
-                                key={idx}
-                                className={`${badge === "Más Popular" ? "bg-[#AB9072] hover:bg-[#967a5f]" :
-                                  badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                      "bg-red-500 hover:bg-red-600"
-                                  } shadow-md`}
-                              >
-                                {badge}
-                              </Badge>
-                            ))}
-                          </div>
                           {/* Favorite button */}
                           <button
                             onClick={() => toggleFavorite(dress.id)}
@@ -1387,21 +1341,6 @@ export default function DressRentalPage() {
                             alt={shoe.name}
                             className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
                           />
-                          {/* Badges */}
-                          <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {shoe.badges.map((badge: string, idx: number) => (
-                              <Badge
-                                key={idx}
-                                className={`${badge === "Más Popular" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                  badge === "Nuevo" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                    badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                      "bg-red-500 hover:bg-red-600"
-                                  } shadow-md`}
-                              >
-                                {badge}
-                              </Badge>
-                            ))}
-                          </div>
                           {/* Favorite button */}
                           <button
                             onClick={() => toggleFavorite(shoe.id)}
@@ -1491,21 +1430,6 @@ export default function DressRentalPage() {
                                   e.currentTarget.src = '/placeholder.jpg'
                                 }}
                               />
-                              {/* Badges */}
-                              <div className="absolute top-3 left-3 flex flex-col gap-2">
-                                {product.badges.map((badge: string, idx: number) => (
-                                  <Badge
-                                    key={idx}
-                                    className={`${badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                                      badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                                        badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                                          "bg-red-500 hover:bg-red-600"
-                                      } shadow-md`}
-                                  >
-                                    {badge}
-                                  </Badge>
-                                ))}
-                              </div>
                               {/* Favorite button */}
                               <button
                                 onClick={() => toggleFavorite(product.id)}
