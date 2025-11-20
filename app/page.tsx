@@ -63,180 +63,180 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
   return (
     <div className="space-y-6">
-    {itemName && (
-      <div className="bg-[#B4D8D8]/20 p-4 rounded-lg text-center">
-        <p className="text-sm text-gray-600">Reservando cita para probar:</p>
-        <p className="font-serif text-lg font-semibold text-[#128498]">{itemName}</p>
-      </div>
-    )}
+      {itemName && (
+        <div className="bg-[#B4D8D8]/20 p-4 rounded-lg text-center">
+          <p className="text-sm text-gray-600">Reservando cita para probar:</p>
+          <p className="font-serif text-lg font-semibold text-[#128498]">{itemName}</p>
+        </div>
+      )}
 
-    {/* Progress Indicator */}
-    <div className="flex items-center justify-center space-x-2">
-      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#128498] text-white' : 'bg-[#B4D8D8] text-gray-700'} font-semibold`}>
-        1
+      {/* Progress Indicator */}
+      <div className="flex items-center justify-center space-x-2">
+        <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#128498] text-white' : 'bg-[#B4D8D8] text-gray-700'} font-semibold`}>
+          1
+        </div>
+        <div className="w-12 h-1 bg-gray-200"></div>
+        <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 2 ? 'bg-[#128498] text-white' : 'bg-gray-200 text-gray-400'} font-semibold`}>
+          2
+        </div>
       </div>
-      <div className="w-12 h-1 bg-gray-200"></div>
-      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${formStep === 2 ? 'bg-[#128498] text-white' : 'bg-gray-200 text-gray-400'} font-semibold`}>
-        2
-      </div>
-    </div>
 
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {formStep === 1 ? (
-        <>
-          <div>
-            <Label htmlFor="name">Nombre y Apellido</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Ej: María González"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="phone">Teléfono (WhatsApp)</Label>
-            <Input
-              id="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="Ej: +54 9 11 1234-5678"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="tu@email.com"
-              required
-            />
-          </div>
-          <Button
-            type="button"
-            onClick={() => {
-              if (formData.name && formData.phone && formData.email) {
-                setFormStep(2)
-              }
-            }}
-            className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white"
-          >
-            Continuar <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </>
-      ) : (
-        <>
-          <div>
-            <Label>Fecha de la Cita</Label>
-            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formatDate(formData.date)}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={formData.date}
-                  onSelect={(date) => {
-                    // Limpiar el horario cuando cambia la fecha
-                    setFormData({ ...formData, date, time: "" })
-                    // Cerrar el Popover cuando se selecciona una fecha
-                    setCalendarOpen(false)
-                  }}
-                  disabled={(date) => date < new Date() || date.getDay() === 0}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            <p className="text-xs text-gray-500 mt-1">No atendemos domingos</p>
-          </div>
-          <div>
-            <Label htmlFor="time">Horario Disponible</Label>
-            <select
-              id="time"
-              value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498] disabled:bg-gray-100 disabled:cursor-not-allowed"
-              required
-              disabled={!formData.date || availableTimeSlots.length === 0}
-            >
-              <option value="">
-                {!formData.date 
-                  ? "Primero selecciona una fecha" 
-                  : availableTimeSlots.length === 0 
-                    ? "No hay horarios disponibles" 
-                    : "Selecciona un horario"}
-              </option>
-              {availableTimeSlots.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot} hs
-                </option>
-              ))}
-            </select>
-            {formData.date && availableTimeSlots.length > 0 && (
-              <p className="text-xs text-gray-500 mt-1">
-                {formData.date.getDay() === 6 
-                  ? "Sábado: 10:00 a 14:00 hs" 
-                  : "Lunes a Viernes: 10:00 a 20:00 hs"}
-              </p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="dni">DNI</Label>
-            <Input
-              id="dni"
-              value={formData.dni}
-              onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
-              placeholder="12345678"
-            />
-            <p className="text-xs text-gray-500 mt-1">Solo necesario para la reservá final</p>
-          </div>
-
-          {/* Mensaje de error */}
-          {submitError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
-              {submitError}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {formStep === 1 ? (
+          <>
+            <div>
+              <Label htmlFor="name">Nombre y Apellido</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ej: María González"
+                required
+              />
             </div>
-          )}
-
-          <div className="flex gap-2">
+            <div>
+              <Label htmlFor="phone">Teléfono (WhatsApp)</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="Ej: +54 9 11 1234-5678"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="tu@email.com"
+                required
+              />
+            </div>
             <Button
               type="button"
-              variant="outline"
-              onClick={() => setFormStep(1)}
-              className="flex-1"
-              disabled={submittingForm}
+              onClick={() => {
+                if (formData.name && formData.phone && formData.email) {
+                  setFormStep(2)
+                }
+              }}
+              className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white"
             >
-              <ChevronUp className="mr-2 h-4 w-4" /> Volver
+              Continuar <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
-            <Button
-              type="submit"
-              className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white"
-              disabled={submittingForm}
-            >
-              {submittingForm ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Enviando...
-                </>
-              ) : (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Confirmar Cita
-                </>
+          </>
+        ) : (
+          <>
+            <div>
+              <Label>Fecha de la Cita</Label>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formatDate(formData.date)}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.date}
+                    onSelect={(date) => {
+                      // Limpiar el horario cuando cambia la fecha
+                      setFormData({ ...formData, date, time: "" })
+                      // Cerrar el Popover cuando se selecciona una fecha
+                      setCalendarOpen(false)
+                    }}
+                    disabled={(date) => date < new Date() || date.getDay() === 0}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <p className="text-xs text-gray-500 mt-1">No atendemos domingos</p>
+            </div>
+            <div>
+              <Label htmlFor="time">Horario Disponible</Label>
+              <select
+                id="time"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#128498] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+                disabled={!formData.date || availableTimeSlots.length === 0}
+              >
+                <option value="">
+                  {!formData.date
+                    ? "Primero selecciona una fecha"
+                    : availableTimeSlots.length === 0
+                      ? "No hay horarios disponibles"
+                      : "Selecciona un horario"}
+                </option>
+                {availableTimeSlots.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot} hs
+                  </option>
+                ))}
+              </select>
+              {formData.date && availableTimeSlots.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.date.getDay() === 6
+                    ? "Sábado: 10:00 a 14:00 hs"
+                    : "Lunes a Viernes: 10:00 a 20:00 hs"}
+                </p>
               )}
-            </Button>
-          </div>
-        </>
-      )}
-    </form>
-  </div>
+            </div>
+            <div>
+              <Label htmlFor="dni">DNI</Label>
+              <Input
+                id="dni"
+                value={formData.dni}
+                onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
+                placeholder="12345678"
+              />
+              <p className="text-xs text-gray-500 mt-1">Solo necesario para la reservá final</p>
+            </div>
+
+            {/* Mensaje de error */}
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+                {submitError}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setFormStep(1)}
+                className="flex-1"
+                disabled={submittingForm}
+              >
+                <ChevronUp className="mr-2 h-4 w-4" /> Volver
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-[#128498] hover:bg-[#0f6a7a] text-white"
+                disabled={submittingForm}
+              >
+                {submittingForm ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Confirmar Cita
+                  </>
+                )}
+              </Button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
   )
 }
 
@@ -345,9 +345,9 @@ export default function DressRentalPage() {
   // Función para generar horarios disponibles según el día de la semana
   const getAvailableTimeSlots = (date: Date | undefined): string[] => {
     if (!date) return []
-    
+
     const dayOfWeek = date.getDay() // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-    
+
     // Sábado: 10:00 a 14:00 (cada 30 minutos)
     if (dayOfWeek === 6) {
       const slots: string[] = []
@@ -357,7 +357,7 @@ export default function DressRentalPage() {
       }
       return slots
     }
-    
+
     // Lunes a Viernes: 10:00 a 20:00 (cada 30 minutos)
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
       const slots: string[] = []
@@ -367,7 +367,7 @@ export default function DressRentalPage() {
       }
       return slots
     }
-    
+
     // Domingo: no hay horarios disponibles
     return []
   }
@@ -508,8 +508,8 @@ export default function DressRentalPage() {
     if (!product) return null
 
     // Filtrar imágenes válidas (no null, undefined o vacías)
-    const validImages = product.images 
-      ? product.images.filter((img: string) => img && img.trim() !== '') 
+    const validImages = product.images
+      ? product.images.filter((img: string) => img && img.trim() !== '')
       : []
 
     return (
@@ -560,11 +560,10 @@ export default function DressRentalPage() {
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIndex(idx)}
-                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-105 flex-shrink-0 ${
-                    selectedImageIndex === idx 
-                      ? 'border-[#128498] shadow-lg scale-105' 
+                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-105 flex-shrink-0 ${selectedImageIndex === idx
+                      ? 'border-[#128498] shadow-lg scale-105'
                       : 'border-gray-200 hover:border-gray-400'
-                  }`}
+                    }`}
                 >
                   <img
                     src={image}
@@ -814,9 +813,8 @@ export default function DressRentalPage() {
           {carouselSlides.map((slide, index) => (
             <div
               key={slide.id}
-              className={`absolute inset-0 w-full h-screen transition-opacity duration-[2500ms] ${
-                currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
+              className={`absolute inset-0 w-full h-screen transition-opacity duration-[2500ms] ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
               style={{
                 transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
               }}
@@ -827,11 +825,10 @@ export default function DressRentalPage() {
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className={`w-full h-full object-cover object-center ${
-                      index % 2 === 0 
-                        ? 'carousel-image-animate' 
+                    className={`w-full h-full object-cover object-center ${index % 2 === 0
+                        ? 'carousel-image-animate'
                         : 'carousel-image-animate-alt'
-                    }`}
+                      }`}
                     style={{
                       minWidth: '100%',
                       minHeight: '100%',
@@ -847,41 +844,38 @@ export default function DressRentalPage() {
                 {/* Content - Centrado vertical y horizontal estilo minimalista */}
                 <div className="relative z-10 h-full flex items-center justify-center">
                   <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
-                    <h1 
+                    <h1
                       key={`title-${slide.id}-${currentSlide}`}
-                      className={`font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider ${
-                        currentSlide === index 
-                          ? 'carousel-text-enter' 
-                          : previousSlide === index 
-                            ? 'carousel-text-exit' 
+                      className={`font-serif text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight tracking-wider ${currentSlide === index
+                          ? 'carousel-text-enter'
+                          : previousSlide === index
+                            ? 'carousel-text-exit'
                             : 'opacity-0'
-                      }`}
+                        }`}
                     >
                       {slide.title}
                     </h1>
 
-                    <p 
+                    <p
                       key={`subtitle-${slide.id}-${currentSlide}`}
-                      className={`text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto ${
-                        currentSlide === index 
-                          ? 'carousel-text-enter carousel-text-delay-1' 
-                          : previousSlide === index 
-                            ? 'carousel-text-exit carousel-text-delay-1' 
+                      className={`text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-light tracking-wide max-w-2xl mx-auto ${currentSlide === index
+                          ? 'carousel-text-enter carousel-text-delay-1'
+                          : previousSlide === index
+                            ? 'carousel-text-exit carousel-text-delay-1'
                             : 'opacity-0'
-                      }`}
+                        }`}
                     >
                       {slide.subtitle}
                     </p>
 
-                    <div 
+                    <div
                       key={`buttons-${slide.id}-${currentSlide}`}
-                      className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${
-                        currentSlide === index 
-                          ? 'carousel-text-enter carousel-text-delay-2' 
-                          : previousSlide === index 
-                            ? 'carousel-text-exit carousel-text-delay-2' 
+                      className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${currentSlide === index
+                          ? 'carousel-text-enter carousel-text-delay-2'
+                          : previousSlide === index
+                            ? 'carousel-text-exit carousel-text-delay-2'
                             : 'opacity-0'
-                      }`}
+                        }`}
                     >
                       <Dialog open={carouselModalOpen} onOpenChange={setCarouselModalOpen}>
                         <DialogTrigger asChild>
@@ -1130,7 +1124,7 @@ export default function DressRentalPage() {
               Cada vestido ha sido cuidadosamente seleccionado para garantizar que te sientas radiante y segura en tu
               día especial.
             </p>
-            <a 
+            <a
               href="/articulos"
               className="inline-flex items-center gap-2 px-8 py-3 bg-[#128498] hover:bg-[#0f6a7a] text-white rounded-lg font-semibold transition-all hover:shadow-lg"
             >
@@ -1768,7 +1762,7 @@ export default function DressRentalPage() {
               <Mail className="h-12 w-12 text-[#128498] mx-auto mb-4" />
               <h3 className="font-serif text-xl font-semibold mb-2">Email</h3>
               <p className="text-gray-600">
-                diazdeluca2691@gmail.com 
+                diazdeluca2691@gmail.com
                 <br />
                 Respuesta en 24hs
               </p>
@@ -1836,13 +1830,23 @@ export default function DressRentalPage() {
                   <Facebook className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://wa.me/1234567890"
+                  href="https://wa.me/+5491151101658"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-green-500 hover:text-white transition-all"
                 >
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.tiktok.com/@diazdeluca"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-[#128498] hover:text-white transition-all"
+                >
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
                   </svg>
                 </a>
               </div>

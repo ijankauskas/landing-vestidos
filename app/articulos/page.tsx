@@ -51,7 +51,7 @@ function ArticulosContent() {
         }
         
         const response = await getArticulosPublicos(currentPage, limit, options)
-        
+
         // Convertir artículos
         const productosConvertidos = response.data.map(convertirArticuloAProducto)
         setArticulos(productosConvertidos)
@@ -287,23 +287,6 @@ function ArticulosContent() {
                       }}
                     />
                     
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                      {producto.badges.map((badge: string, idx: number) => (
-                        <Badge 
-                          key={idx}
-                          className={`${
-                            badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                            badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                            badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                            "bg-red-500 hover:bg-red-600"
-                          } shadow-md`}
-                        >
-                          {badge}
-                        </Badge>
-                      ))}
-                    </div>
-
                     {/* Favorite button */}
                     <button 
                       onClick={() => toggleFavorite(producto.id)}

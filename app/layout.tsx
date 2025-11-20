@@ -33,6 +33,11 @@ export const metadata: Metadata = {
   description:
     "Descubre nuestra exclusiva colección de vestidos de fiesta para alquiler. Elegancia y sofisticación para tus momentos especiales.",
   generator: "v0.dev",
+  icons: {
+    icon: "/150PPI.png",
+    shortcut: "/150PPI.png",
+    apple: "/150PPI.png",
+  },
 }
 
 export default function RootLayout({

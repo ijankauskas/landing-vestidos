@@ -208,11 +208,11 @@ export function convertirArticuloAProducto(articulo: Articulo) {
       articulo.marca ? `Marca: ${articulo.marca}` : null,
       articulo.codigo ? `Código: ${articulo.codigo}` : null,
       `Categoría: ${categoriaOriginal}`,
-      `Unidad: ${articulo.unidadMedida}`,
       articulo.exentoIva ? "Exento de IVA" : null,
     ].filter(Boolean) as string[],
     care: "Cuidar según instrucciones del fabricante.",
     occasion: [categoriaOriginal].filter(Boolean) as string[],
+    observacionesWeb: articulo.observacionesWeb,
   }
 }
 

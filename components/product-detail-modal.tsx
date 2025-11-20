@@ -40,6 +40,7 @@ export function ProductDetailModal({
   AppointmentForm
 }: ProductDetailModalProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  console.log(product)
 
   if (!product) return null
 
@@ -164,7 +165,7 @@ export function ProductDetailModal({
             {/* Descripción */}
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Descripción</h3>
-              <p className="text-gray-600 leading-relaxed">{product.fullDescription || product.description}</p>
+              <p className="text-gray-600 leading-relaxed">{product.observacionesWeb}</p>
             </div>
 
             {/* Características */}
@@ -179,31 +180,6 @@ export function ProductDetailModal({
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-
-            {/* Cuidados */}
-            {product.care && (
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-amber-600" />
-                  Cuidados
-                </h3>
-                <p className="text-gray-700 text-sm">{product.care}</p>
-              </div>
-            )}
-
-            {/* Ocasiones */}
-            {product.occasion && product.occasion.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Ideal Para</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.occasion.map((occ: string) => (
-                    <Badge key={occ} className="bg-[#B4D8D8] text-gray-800 hover:bg-[#9bc2c2]">
-                      {occ}
-                    </Badge>
-                  ))}
-                </div>
               </div>
             )}
 
