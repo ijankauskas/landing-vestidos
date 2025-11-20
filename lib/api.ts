@@ -210,7 +210,6 @@ export function convertirArticuloAProducto(articulo: Articulo) {
       `Categoría: ${categoriaOriginal}`,
       articulo.exentoIva ? "Exento de IVA" : null,
     ].filter(Boolean) as string[],
-    care: "Cuidar según instrucciones del fabricante.",
     occasion: [categoriaOriginal].filter(Boolean) as string[],
     observacionesWeb: articulo.observacionesWeb,
   }

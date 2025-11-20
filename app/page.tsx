@@ -629,20 +629,6 @@ export default function DressRentalPage() {
             </div>
           )}
 
-          {/* Ocasiones */}
-          {product.occasion && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Ideal Para</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.occasion.map((occ: string) => (
-                  <Badge key={occ} className="bg-[#B4D8D8] text-gray-800 hover:bg-[#9bc2c2]">
-                    {occ}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* CTAs - Sticky solo en desktop con scroll */}
           <div className="lg:sticky lg:bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-6 pb-2 lg:-mx-2 lg:px-2 border-t space-y-3 mt-6">
             <Dialog>
