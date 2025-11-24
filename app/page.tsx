@@ -318,7 +318,7 @@ export default function DressRentalPage() {
   const carouselSlides = [
     {
       id: 1,
-      image: "/mar_2.jpg",
+      image: "/portada_1.jpg",
       title: "Vestidos que Cuentan Historias",
       subtitle: "Elegancia para cada ocasión especial",
       cta: "Reservar Cita",
@@ -326,7 +326,7 @@ export default function DressRentalPage() {
     },
     {
       id: 2,
-      image: "/mar_1.jpg",
+      image: "/portada_2.jpg",
       title: "Encontrá Tu Vestido Perfecto",
       subtitle: "Más de 100 diseños exclusivos disponibles",
       cta: "Reservar Cita",
@@ -334,7 +334,7 @@ export default function DressRentalPage() {
     },
     {
       id: 3,
-      image: "/mar_3.jpg",
+      image: "/portada_3.jpg",
       title: "Brillá en Tu Evento",
       subtitle: "Colección Premium 2025",
       cta: "Reservar Cita",
@@ -1038,7 +1038,7 @@ export default function DressRentalPage() {
             <div className="relative">
               <div className="relative z-10">
                 <img
-                  src="/elegant-woman-evening-dress.png"
+                  src="/principal.jpg"
                   alt="Mujer elegante en vestido de fiesta"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />

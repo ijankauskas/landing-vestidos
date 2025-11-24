@@ -1,8 +1,8 @@
 import type { ArticulosResponse, Articulo } from "@/types/articulo"
 
 // Obtener la URL base de la API desde variables de entorno
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
-// const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
+const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
 const API_KEY = "ecom_1_919f89353fb94505252c3e084fbf7c46"
 
 /**
