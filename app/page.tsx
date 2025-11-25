@@ -1826,7 +1826,7 @@ export default function DressRentalPage() {
                   </svg>
                 </a>
                 <a
-                  href="https://www.tiktok.com/@diazdeluca"
+                  href="https://www.tiktok.com/@diazdeluca7"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gray-800 p-3 rounded-full text-gray-300 hover:bg-[#128498] hover:text-white transition-all"
