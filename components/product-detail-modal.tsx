@@ -76,21 +76,6 @@ export function ProductDetailModal({
                 <Heart className={`h-6 w-6 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
               </button>
 
-              {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
-                {product.badges?.map((badge: string, idx: number) => (
-                  <Badge
-                    key={idx}
-                    className={`${badge === "Más Popular" ? "bg-[#128498]" :
-                      badge === "Nuevo" ? "bg-[#A1D0B2] text-gray-900" :
-                        badge === "Disponible" ? "bg-green-500" :
-                          "bg-red-500"
-                      } shadow-lg`}
-                  >
-                    {badge}
-                  </Badge>
-                ))}
-              </div>
 
               {/* Navegación de imágenes */}
               {validImages.length > 1 && (

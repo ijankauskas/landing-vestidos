@@ -19,11 +19,11 @@ export default function ArticulosSection() {
       try {
         setLoading(true)
         const response = await getArticulosPublicos(1, 10)
-        
+
         // Convertir artículos de la API al formato del componente
         const productosConvertidos = response.data.map(convertirArticuloAProducto)
         setArticulos(productosConvertidos)
-        
+
         console.log("Artículos cargados:", response.data.length)
       } catch (err) {
         console.error("Error cargando artículos:", err)
@@ -37,7 +37,7 @@ export default function ArticulosSection() {
   }, [])
 
   const toggleFavorite = (id: number) => {
-    setFavorites(prev => 
+    setFavorites(prev =>
       prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
     )
   }
@@ -57,8 +57,8 @@ export default function ArticulosSection() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
           <p className="text-red-600 font-semibold mb-2">Error al cargar artículos</p>
           <p className="text-red-500 text-sm">{error}</p>
-          <Button 
-            onClick={() => window.location.reload()} 
+          <Button
+            onClick={() => window.location.reload()}
             className="mt-4 bg-red-600 hover:bg-red-700"
           >
             Reintentar
@@ -106,26 +106,8 @@ export default function ArticulosSection() {
                     }
                   }}
                 />
-                
-                {/* Badges */}
-                <div className="absolute top-3 left-3 flex flex-col gap-2">
-                  {producto.badges.map((badge: string, idx: number) => (
-                    <Badge 
-                      key={idx}
-                      className={`${
-                        badge === "Más Popular" ? "bg-[#128498] hover:bg-[#0f6a7a]" :
-                        badge === "Nuevo" ? "bg-[#A1D0B2] hover:bg-[#8cb899] text-gray-900" :
-                        badge === "Disponible" ? "bg-white/90 hover:bg-white text-gray-900 border border-gray-200" :
-                        "bg-red-500 hover:bg-red-600"
-                      } shadow-md`}
-                    >
-                      {badge}
-                    </Badge>
-                  ))}
-                </div>
-
                 {/* Favorite button */}
-                <button 
+                <button
                   onClick={() => toggleFavorite(producto.id)}
                   className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
                 >
@@ -147,7 +129,7 @@ export default function ArticulosSection() {
                 </div>
 
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">{producto.description}</p>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-[#128498]">{producto.price}</span>
                   <Badge variant="outline" className="text-xs">{producto.category}</Badge>
