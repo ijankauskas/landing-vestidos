@@ -165,7 +165,7 @@ export function ProductDetailModal({
             {/* Descripción */}
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Descripción</h3>
-              <p className="text-gray-600 leading-relaxed">{product.observacionesWeb}</p>
+              <p className="text-gray-600 leading-relaxed">{product.observacionesWeb || product.fullDescription || product.description || 'Sin descripción disponible'}</p>
             </div>
 
             {/* Características */}

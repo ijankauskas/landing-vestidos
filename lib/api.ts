@@ -149,7 +149,7 @@ export function getArticuloImages(articulo: Articulo): string[] {
   
   // Si no hay imágenes, usar placeholder
   if (images.length === 0) {
-    images.push("/placeholder.jpg")
+    images.push("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==")
   }
   
   return images
@@ -191,7 +191,7 @@ export function convertirArticuloAProducto(articulo: Articulo) {
     name: articulo.descripcion,
     description: articulo.descripcionCorta || articulo.descripcion,
     fullDescription: articulo.descripcion,
-    image: articulo.imagenPrincipal || "/placeholder.jpg",
+    image: articulo.imagenPrincipal || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==",
     images: getArticuloImages(articulo),
     category: categoriaNormalizada,
     categoriaOriginal: categoriaOriginal, // Guardamos la categoría original de la API
@@ -206,9 +206,7 @@ export function convertirArticuloAProducto(articulo: Articulo) {
     colors: [], // Agregar lógica de colores si es necesario
     features: [
       articulo.marca ? `Marca: ${articulo.marca}` : null,
-      articulo.codigo ? `Código: ${articulo.codigo}` : null,
       `Categoría: ${categoriaOriginal}`,
-      articulo.exentoIva ? "Exento de IVA" : null,
     ].filter(Boolean) as string[],
     occasion: [categoriaOriginal].filter(Boolean) as string[],
     observacionesWeb: articulo.observacionesWeb,
