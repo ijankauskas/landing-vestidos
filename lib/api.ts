@@ -6,6 +6,12 @@ const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
 const API_KEY = "ecom_1_919f89353fb94505252c3e084fbf7c46"
 
 /**
+ * Variable de mantenimiento
+ * Cambiar a true para activar la pantalla de mantenimiento
+ */
+export const MANTENIMIENTO_ACTIVO = false
+
+/**
  * Función helper para manejar respuestas de la API
  */
 async function handleResponse<T>(response: Response): Promise<T> {

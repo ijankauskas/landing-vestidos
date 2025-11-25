@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Instrument_Serif, Manrope, Pinyon_Script } from "next/font/google"
 import "./globals.css"
+import MaintenanceCheck from "@/components/maintenance-check"
 
 // Instrument Serif - Para títulos
 const instrumentSerif = Instrument_Serif({
@@ -47,7 +48,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${instrumentSerif.variable} ${manrope.variable} ${pinyonScript.variable} antialiased`}>
-      <body>{children}</body>
+      <body>
+        <MaintenanceCheck>{children}</MaintenanceCheck>
+      </body>
     </html>
   )
 }
