@@ -135,7 +135,7 @@ export async function getArticulosPorCategoria(
  */
 export function getArticuloImages(articulo: Articulo): string[] {
   const images: string[] = []
-  
+
   // Solo agregar imágenes que no sean null, undefined o vacías
   if (articulo.imagenPrincipal && articulo.imagenPrincipal.trim() !== '') {
     images.push(articulo.imagenPrincipal)
@@ -152,12 +152,12 @@ export function getArticuloImages(articulo: Articulo): string[] {
   if (articulo.imagen5 && articulo.imagen5.trim() !== '') {
     images.push(articulo.imagen5)
   }
-  
+
   // Si no hay imágenes, usar placeholder
   if (images.length === 0) {
     images.push("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==")
   }
-  
+
   return images
 }
 
@@ -166,7 +166,7 @@ export function getArticuloImages(articulo: Articulo): string[] {
  */
 export function normalizarCategoria(categoria: string): string {
   const categoriaNormalizada = categoria.toUpperCase().trim()
-  
+
   // Mapeo de categorías de la API a las del componente
   const mapeoCategories: { [key: string]: string } = {
     "VESTIDO": "Largos",
@@ -181,7 +181,7 @@ export function normalizarCategoria(categoria: string): string {
     "ACCESORIO": "Accesorios",
     "ACCESORIOS": "Accesorios",
   }
-  
+
   return mapeoCategories[categoriaNormalizada] || "Otros"
 }
 
@@ -191,7 +191,7 @@ export function normalizarCategoria(categoria: string): string {
 export function convertirArticuloAProducto(articulo: Articulo) {
   const categoriaOriginal = articulo.categoria || "Otros"
   const categoriaNormalizada = normalizarCategoria(categoriaOriginal)
-  
+
   return {
     id: articulo.id,
     name: articulo.descripcion,
@@ -213,7 +213,7 @@ export function convertirArticuloAProducto(articulo: Articulo) {
     features: [
       articulo.marca ? `Marca: ${articulo.marca}` : null,
       `Categoría: ${categoriaOriginal}`,
-      `Talle: ${articulo.observaciones}`,
+      `Talle: ${articulo.observaciones ?? ''}`,
     ].filter(Boolean) as string[],
     occasion: [categoriaOriginal].filter(Boolean) as string[],
     observacionesWeb: articulo.observacionesWeb,
@@ -267,7 +267,7 @@ export async function crearLeadPublico(
     }
 
     const data = await response.json()
-    
+
     return {
       success: true,
       message: data.message || "Lead creado exitosamente",
@@ -275,7 +275,7 @@ export async function crearLeadPublico(
     }
   } catch (error) {
     console.error("Error creando lead público:", error)
-    
+
     return {
       success: false,
       message: error instanceof Error ? error.message : "Error al crear el lead",
@@ -288,14 +288,14 @@ export async function crearLeadPublico(
  */
 export function separarNombreCompleto(nombreCompleto: string): { nombre: string; apellido?: string } {
   const partes = nombreCompleto.trim().split(/\s+/)
-  
+
   if (partes.length === 1) {
     return { nombre: partes[0] }
   }
-  
+
   const nombre = partes[0]
   const apellido = partes.slice(1).join(' ')
-  
+
   return { nombre, apellido }
 }
 
@@ -306,7 +306,7 @@ export function formatearFechaAPI(fecha: Date): string {
   const year = fecha.getFullYear()
   const month = String(fecha.getMonth() + 1).padStart(2, '0')
   const day = String(fecha.getDate()).padStart(2, '0')
-  
+
   return `${year}-${month}-${day}`
 }
 
