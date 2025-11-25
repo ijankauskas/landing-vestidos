@@ -17,6 +17,7 @@ export interface Articulo {
   imagen4: string
   imagen5: string
   esDestacado: boolean
+  observaciones: string
   observacionesWeb: string
 }
 

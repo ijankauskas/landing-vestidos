@@ -213,6 +213,7 @@ export function convertirArticuloAProducto(articulo: Articulo) {
     features: [
       articulo.marca ? `Marca: ${articulo.marca}` : null,
       `Categoría: ${categoriaOriginal}`,
+      `Talle: ${articulo.observaciones}`,
     ].filter(Boolean) as string[],
     occasion: [categoriaOriginal].filter(Boolean) as string[],
     observacionesWeb: articulo.observacionesWeb,
