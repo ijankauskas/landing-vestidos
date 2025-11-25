@@ -663,7 +663,7 @@ export default function DressRentalPage() {
             </Dialog>
 
             <a
-              href="https://wa.me/1234567890"
+              href="https://wa.me/+5491151101658"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3 border-2 border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-all font-semibold"
@@ -683,7 +683,7 @@ export default function DressRentalPage() {
     <div className="min-h-screen bg-white">
       <div className="fixed bottom-6 right-6 z-50">
         <a
-          href="https://wa.me/1234567890"
+          href="https://wa.me/+5491151101658"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center justify-center"
@@ -1890,7 +1890,7 @@ export default function DressRentalPage() {
                   </a>
                 </li>
                 <li>
-                  <a href="https://wa.me/1234567890" className="hover:text-[#128498] transition-colors flex items-center gap-2">
+                  <a href="https://wa.me/+5491151101658" className="hover:text-[#128498] transition-colors flex items-center gap-2">
                     <ChevronDown className="h-4 w-4 -rotate-90" />
                     Soporte WhatsApp
                   </a>
