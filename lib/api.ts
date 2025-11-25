@@ -129,6 +129,28 @@ export async function getArticulosPorCategoria(
 }
 
 /**
+ * Convierte URLs de Google Drive al formato de imagen directa
+ * @param url - URL de Google Drive o URL de imagen directa
+ * @returns URL convertida al formato de imagen directa o la URL original si no es de Google Drive
+ */
+export function convertirUrlGoogleDrive(url: string): string {
+  if (!url || url.trim() === '') return url
+
+  // Patrón para detectar URLs de Google Drive en formato: https://drive.google.com/file/d/ID/view
+  const drivePattern = /https?:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
+  const match = url.match(drivePattern)
+
+  if (match && match[1]) {
+    // Extraer el ID y convertir al formato de imagen directa
+    const fileId = match[1]
+    return `https://lh3.googleusercontent.com/d/${fileId}`
+  }
+
+  // Si ya está en formato de imagen directa o es otra URL, retornar sin cambios
+  return url
+}
+
+/**
  * Hook/función para obtener las imágenes de un artículo
  * @param articulo - El artículo del cual obtener imágenes
  * @returns Array de URLs de imágenes válidas
@@ -136,21 +158,21 @@ export async function getArticulosPorCategoria(
 export function getArticuloImages(articulo: Articulo): string[] {
   const images: string[] = []
 
-  // Solo agregar imágenes que no sean null, undefined o vacías
+  // Solo agregar imágenes que no sean null, undefined o vacías, y convertir URLs de Google Drive
   if (articulo.imagenPrincipal && articulo.imagenPrincipal.trim() !== '') {
-    images.push(articulo.imagenPrincipal)
+    images.push(convertirUrlGoogleDrive(articulo.imagenPrincipal))
   }
   if (articulo.imagen2 && articulo.imagen2.trim() !== '') {
-    images.push(articulo.imagen2)
+    images.push(convertirUrlGoogleDrive(articulo.imagen2))
   }
   if (articulo.imagen3 && articulo.imagen3.trim() !== '') {
-    images.push(articulo.imagen3)
+    images.push(convertirUrlGoogleDrive(articulo.imagen3))
   }
   if (articulo.imagen4 && articulo.imagen4.trim() !== '') {
-    images.push(articulo.imagen4)
+    images.push(convertirUrlGoogleDrive(articulo.imagen4))
   }
   if (articulo.imagen5 && articulo.imagen5.trim() !== '') {
-    images.push(articulo.imagen5)
+    images.push(convertirUrlGoogleDrive(articulo.imagen5))
   }
 
   // Si no hay imágenes, usar placeholder
@@ -191,13 +213,13 @@ export function normalizarCategoria(categoria: string): string {
 export function convertirArticuloAProducto(articulo: Articulo) {
   const categoriaOriginal = articulo.categoria || "Otros"
   const categoriaNormalizada = normalizarCategoria(categoriaOriginal)
-
+  
   return {
     id: articulo.id,
     name: articulo.descripcion,
     description: articulo.descripcionCorta || articulo.descripcion,
     fullDescription: articulo.descripcion,
-    image: articulo.imagenPrincipal || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==",
+    image: convertirUrlGoogleDrive(articulo.imagenPrincipal || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg=="),
     images: getArticuloImages(articulo),
     category: categoriaNormalizada,
     categoriaOriginal: categoriaOriginal, // Guardamos la categoría original de la API
