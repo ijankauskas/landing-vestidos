@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Heart, Star, Search, ChevronLeft, ChevronRight, Filter, X } from "lucide-react"
 import { getArticulosPublicos, convertirArticuloAProducto, type ArticulosOptions } from "@/lib/api"
 import { ProductDetailModal } from "@/components/product-detail-modal"
+import { AppointmentForm } from "@/components/appointment-form"
 
 function ArticulosContent() {
   const router = useRouter()
@@ -335,6 +336,7 @@ function ArticulosContent() {
                       }
                       favorites={favorites}
                       toggleFavorite={toggleFavorite}
+                      AppointmentForm={AppointmentForm}
                     />
                   </CardContent>
                 </Card>

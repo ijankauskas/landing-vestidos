@@ -11,16 +11,7 @@ interface ProductDetailModalProps {
   trigger: React.ReactNode
   favorites: number[]
   toggleFavorite: (id: number) => void
-  formData?: any
-  setFormData?: any
-  formStep?: number
-  setFormStep?: any
-  handleSubmit?: any
-  formatDate?: any
-  availableTimeSlots?: string[]
-  submittingForm?: boolean
-  submitError?: string | null
-  AppointmentForm?: React.ComponentType<any>
+  AppointmentForm?: React.ComponentType<{ itemName?: string }>
 }
 
 export function ProductDetailModal({
@@ -28,15 +19,6 @@ export function ProductDetailModal({
   trigger,
   favorites,
   toggleFavorite,
-  formData,
-  setFormData,
-  formStep,
-  setFormStep,
-  handleSubmit,
-  formatDate,
-  availableTimeSlots,
-  submittingForm,
-  submitError,
   AppointmentForm
 }: ProductDetailModalProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -54,12 +36,12 @@ export function ProductDetailModal({
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden p-8">
+      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-y-auto lg:overflow-hidden p-4 md:p-8">
         <DialogHeader>
           <DialogTitle className="sr-only">{product.name}</DialogTitle>
         </DialogHeader>
         
-        <div className="grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:max-h-[82vh]">
+        <div className="grid lg:grid-cols-[1.2fr_1fr] gap-4 md:gap-8 lg:max-h-[82vh]">
           {/* Galería de Imágenes - FIJA en desktop, normal en mobile */}
           <div className="space-y-4 lg:sticky lg:top-0 lg:self-start">
             {/* Imagen Principal */}
@@ -124,7 +106,7 @@ export function ProductDetailModal({
             )}
           </div>
 
-          {/* Información del Producto - CON SCROLL solo en desktop */}
+          {/* Información del Producto - CON SCROLL solo en desktop, normal en mobile */}
           <div className="space-y-5 pb-4 lg:overflow-y-auto lg:max-h-[82vh] product-detail-scroll lg:pr-2">
             {/* Header */}
             <div>
@@ -168,9 +150,9 @@ export function ProductDetailModal({
               </div>
             )}
 
-            {/* CTAs - Sticky solo en desktop con scroll */}
-            <div className="lg:sticky lg:bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-6 pb-2 lg:-mx-2 lg:px-2 border-t space-y-3 mt-6">
-              {AppointmentForm && formData && setFormData && handleSubmit ? (
+            {/* CTAs - Sticky en desktop, normal en mobile */}
+            <div className="lg:sticky lg:bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-6 pb-4 lg:pb-2 lg:-mx-2 lg:px-2 border-t space-y-3 mt-6">
+              {AppointmentForm ? (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button size="lg" className="w-full bg-[#128498] hover:bg-[#0f6a7a] text-white">
@@ -187,18 +169,7 @@ export function ProductDetailModal({
                         Agendá tu cita para probarte este artículo
                       </DialogDescription>
                     </DialogHeader>
-                    <AppointmentForm
-                      itemName={product.name}
-                      formData={formData}
-                      setFormData={setFormData}
-                      formStep={formStep}
-                      setFormStep={setFormStep}
-                      handleSubmit={handleSubmit}
-                      formatDate={formatDate}
-                      availableTimeSlots={availableTimeSlots}
-                      submittingForm={submittingForm}
-                      submitError={submitError}
-                    />
+                    <AppointmentForm itemName={product.name} />
                   </DialogContent>
                 </Dialog>
               ) : (
@@ -209,7 +180,7 @@ export function ProductDetailModal({
               )}
 
               <a
-                href="https://wa.me/1234567890"
+                href="https://wa.me/5491151101658"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 border-2 border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-all font-semibold"
