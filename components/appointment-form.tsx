@@ -230,7 +230,15 @@ export function AppointmentForm({ itemName, onSubmitSuccess }: AppointmentFormPr
                       // Cerrar el Popover cuando se selecciona una fecha
                       setCalendarOpen(false)
                     }}
-                    disabled={(date) => date < new Date() || date.getDay() === 0}
+                    disabled={(date) => {
+                      // Crear fecha de hoy a medianoche para comparar solo fechas
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
+                      const dateToCompare = new Date(date)
+                      dateToCompare.setHours(0, 0, 0, 0)
+                      // Deshabilitar fechas pasadas (antes de hoy) y domingos
+                      return dateToCompare < today || date.getDay() === 0
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
