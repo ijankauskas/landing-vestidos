@@ -1,8 +1,8 @@
 import type { ArticulosResponse, Articulo } from "@/types/articulo"
 
 // Obtener la URL base de la API desde variables de entorno
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
-const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/"
+// const API_BASE_URL = "https://servicios.ecomsolver.com.ar/"
 const API_KEY = "ecom_1_919f89353fb94505252c3e084fbf7c46"
 
 /**
@@ -208,11 +208,35 @@ export function normalizarCategoria(categoria: string): string {
 }
 
 /**
+ * Obtiene el precio de la lista principal de un artículo
+ * @param articulo - El artículo del cual obtener el precio
+ * @returns El precio de la lista principal o el precioVenta como fallback
+ */
+function obtenerPrecioListaPrincipal(articulo: Articulo): string {
+  // Si existe articulosListaPrecio, buscar la lista principal
+  if (articulo.articulosListaPrecio && articulo.articulosListaPrecio.length > 0) {
+    const listaPrincipal = articulo.articulosListaPrecio.find(
+      (lista) => lista.listaPrecio?.esPrincipal === true && lista.activo === true
+    )
+    
+    if (listaPrincipal && listaPrincipal.precio) {
+      return listaPrincipal.precio
+    }
+  }
+  
+  // Fallback al precioVenta si no hay lista principal
+  return articulo.precioVenta || "0"
+}
+
+/**
  * Convierte un artículo de la API al formato usado en el componente
  */
 export function convertirArticuloAProducto(articulo: Articulo) {
   const categoriaOriginal = articulo.categoria || "Otros"
   const categoriaNormalizada = normalizarCategoria(categoriaOriginal)
+  
+  // Obtener el precio de la lista principal
+  const precioPrincipal = obtenerPrecioListaPrincipal(articulo)
   
   return {
     id: articulo.id,
@@ -229,7 +253,7 @@ export function convertirArticuloAProducto(articulo: Articulo) {
     ].filter(Boolean) as string[],
     rating: 4.5,
     reviews: 0,
-    price: `$${parseFloat(articulo.precioVenta).toLocaleString("es-AR")}`,
+    price: `$${parseFloat(precioPrincipal).toLocaleString("es-AR")}`,
     sizes: [], // Agregar lógica de tallas si es necesario
     colors: [], // Agregar lógica de colores si es necesario
     features: [

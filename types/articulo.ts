@@ -1,4 +1,24 @@
 // Tipos para la API de artículos
+export interface ListaPrecio {
+  id: number
+  nombre: string
+  esPrincipal: boolean
+}
+
+export interface ArticuloListaPrecio {
+  id: number
+  listaPrecioId: number
+  articuloId: number
+  precio: string
+  fechaVigenciaDesde: string
+  fechaVigenciaHasta: string | null
+  activo: boolean
+  createdAt: string
+  updatedAt: string
+  monedaId: number
+  listaPrecio: ListaPrecio
+}
+
 export interface Articulo {
   id: number
   codigo: string
@@ -19,6 +39,7 @@ export interface Articulo {
   esDestacado: boolean
   observaciones: string
   observacionesWeb: string
+  articulosListaPrecio?: ArticuloListaPrecio[]
 }
 
 export interface Pagination {
