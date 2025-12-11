@@ -49,8 +49,14 @@ export interface Pagination {
   totalPages: number
 }
 
+export interface CategoriaInfo {
+  categoria: string
+  cantidad: number
+}
+
 export interface ArticulosResponse {
   data: Articulo[]
   pagination: Pagination
+  categorias?: CategoriaInfo[]
 }
 

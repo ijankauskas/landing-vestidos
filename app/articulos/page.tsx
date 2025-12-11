@@ -32,9 +32,10 @@ function ArticulosContent() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>((searchParams.get('order') as 'asc' | 'desc') || 'asc')
   const [limit] = useState(12) // Artículos por página
   
-  // Obtener categorías únicas
+  // Obtener categorías únicas con sus cantidades
   const [categorias, setCategorias] = useState<string[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [categoriasInfo, setCategoriasInfo] = useState<{ categoria: string; cantidad: number }[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(searchParams.get('categoria') || null)
 
   // Cargar artículos
   useEffect(() => {
@@ -49,6 +50,7 @@ function ArticulosContent() {
           search: searchTerm || undefined,
           sort: sortBy,
           order: sortOrder,
+          categoria: selectedCategory || undefined,
         }
         
         const response = await getArticulosPublicos(currentPage, limit, options)
@@ -64,9 +66,22 @@ function ArticulosContent() {
           setTotal(response.pagination.total)
         }
         
-        // Extraer categorías únicas
-        const cats = Array.from(new Set(productosConvertidos.map(p => p.category)))
-        setCategorias(cats)
+        // Usar categorías de la respuesta de la API si están disponibles
+        if (response.categorias && response.categorias.length > 0) {
+          const cats = response.categorias.map(cat => cat.categoria)
+          setCategorias(cats)
+          setCategoriasInfo(response.categorias)
+        } else {
+          // Fallback: extraer categorías únicas de los productos si no vienen en la respuesta
+          const cats = Array.from(new Set(productosConvertidos.map(p => p.category)))
+          setCategorias(cats)
+          // Calcular cantidades manualmente como fallback
+          const catsInfo = cats.map(cat => ({
+            categoria: cat,
+            cantidad: productosConvertidos.filter(p => p.category === cat).length
+          }))
+          setCategoriasInfo(catsInfo)
+        }
         
         console.log(`✅ ${response.data.length} artículos cargados (Página ${currentPage}/${response.pagination?.totalPages})`)
       } catch (err) {
@@ -78,7 +93,7 @@ function ArticulosContent() {
     }
 
     fetchArticulos()
-  }, [currentPage, searchTerm, sortBy, sortOrder, limit])
+  }, [currentPage, searchTerm, sortBy, sortOrder, limit, selectedCategory])
 
   // Actualizar URL cuando cambian los filtros
   useEffect(() => {
@@ -87,10 +102,11 @@ function ArticulosContent() {
     if (searchTerm) params.set('search', searchTerm)
     if (sortBy !== 'descripcion') params.set('sort', sortBy)
     if (sortOrder !== 'asc') params.set('order', sortOrder)
+    if (selectedCategory) params.set('categoria', selectedCategory)
     
     const newUrl = params.toString() ? `/articulos?${params.toString()}` : '/articulos'
     router.replace(newUrl, { scroll: false })
-  }, [currentPage, searchTerm, sortBy, sortOrder, router])
+  }, [currentPage, searchTerm, sortBy, sortOrder, selectedCategory, router])
 
   const toggleFavorite = (id: number) => {
     setFavorites(prev => 
@@ -117,9 +133,10 @@ function ArticulosContent() {
     }
   }
 
-  const filteredArticulos = selectedCategory
-    ? articulos.filter(a => a.category === selectedCategory)
-    : articulos
+  const handleCategoryChange = (categoria: string | null) => {
+    setSelectedCategory(categoria)
+    setCurrentPage(1) // Resetear a página 1 al cambiar categoría
+  }
 
   if (loading) {
     return (
@@ -222,28 +239,32 @@ function ArticulosContent() {
           {categorias.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
               <button
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => handleCategoryChange(null)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   !selectedCategory
                     ? 'bg-[#128498] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                Todos ({articulos.length})
+                Todos ({total})
               </button>
-              {categorias.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === cat
-                      ? 'bg-[#128498] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {cat} ({articulos.filter(a => a.category === cat).length})
-                </button>
-              ))}
+              {categorias.map(cat => {
+                const categoriaInfo = categoriasInfo.find(c => c.categoria === cat)
+                const cantidad = categoriaInfo?.cantidad || 0
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategoryChange(cat)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      selectedCategory === cat
+                        ? 'bg-[#128498] text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {cat} ({cantidad})
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
@@ -251,7 +272,7 @@ function ArticulosContent() {
 
       {/* Grid de Artículos */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {filteredArticulos.length === 0 ? (
+        {articulos.length === 0 ? (
           <div className="text-center py-20">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="h-12 w-12 text-gray-400" />
@@ -274,7 +295,7 @@ function ArticulosContent() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredArticulos.map((producto) => (
+              {articulos.map((producto) => (
                 <Card
                   key={producto.id}
                   className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#128498]/20"

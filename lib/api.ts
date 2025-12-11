@@ -30,7 +30,9 @@ export interface ArticulosOptions {
   limit?: number
   search?: string
   sort?: string
-  order?: 'asc' | 'desc'
+  order?: 'asc' | 'desc',
+  groupByCategory?: 'true' | 'false'
+  categoria?: string
 }
 
 /**
@@ -59,6 +61,12 @@ export async function getArticulosPublicos(
     }
     if (options?.order) {
       params.append('order', options.order)
+    }
+    if (options?.groupByCategory) {
+      params.append('groupByCategory', options.groupByCategory)
+    }
+    if (options?.categoria) {
+      params.append('categoria', options.categoria)
     }
 
     const url = `${API_BASE_URL}articulos/public/todos?${params.toString()}`
@@ -185,16 +193,22 @@ export function getArticuloImages(articulo: Articulo): string[] {
 
 /**
  * Normaliza el nombre de categoría de la API al formato usado en el componente
+ * Si la categoría no está en el mapeo, devuelve la categoría original capitalizada
  */
 export function normalizarCategoria(categoria: string): string {
+  if (!categoria || categoria.trim() === '') {
+    return "Otros"
+  }
+
   const categoriaNormalizada = categoria.toUpperCase().trim()
 
-  // Mapeo de categorías de la API a las del componente
+  // Mapeo de categorías de la API a las del componente (solo para normalizar nombres similares)
   const mapeoCategories: { [key: string]: string } = {
-    "VESTIDO": "Largos",
-    "VESTIDOS": "Largos",
-    "VESTIDO LARGO": "Largos",
-    "VESTIDO CORTO": "Cortos",
+    "VESTIDO": "Vestidos",
+    "VESTIDOS": "Vestidos",
+    "VESTIDO LARGO": "Vestidos Largos",
+    "VESTIDO CORTO": "Vestidos Cortos",
+    "VESTIDOS CORTOS": "Vestidos Cortos",
     "ZAPATO": "Zapatos",
     "ZAPATOS": "Zapatos",
     "CALZADO": "Zapatos",
@@ -202,9 +216,20 @@ export function normalizarCategoria(categoria: string): string {
     "ABRIGOS": "Abrigos",
     "ACCESORIO": "Accesorios",
     "ACCESORIOS": "Accesorios",
+    "SACO": "Sacos",
+    "SACOS": "Sacos",
   }
 
-  return mapeoCategories[categoriaNormalizada] || "Otros"
+  // Si está en el mapeo, usar el valor mapeado
+  if (mapeoCategories[categoriaNormalizada]) {
+    return mapeoCategories[categoriaNormalizada]
+  }
+
+  // Si no está en el mapeo, capitalizar la primera letra de cada palabra y devolverla
+  return categoria
+    .split(' ')
+    .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase())
+    .join(' ')
 }
 
 /**

@@ -59,14 +59,12 @@ export default function DressRentalPage() {
         setLoadingArticulos(true)
         setErrorArticulos(null)
 
-        const response = await getArticulosPublicos(1, 50) // Obtener hasta 50 artículos
+        const response = await getArticulosPublicos(1, 9, { limit: 9, groupByCategory: 'true' }) // Obtener hasta 50 artículos
 
         // Convertir artículos de la API al formato del componente
         const productosConvertidos = response.data.map(convertirArticuloAProducto)
 
         setArticulosAPI(productosConvertidos)
-
-        console.log(`✅ ${response.data.length} artículos cargados desde la API`)
       } catch (error) {
         console.error("❌ Error cargando artículos desde la API:", error)
         setErrorArticulos(error instanceof Error ? error.message : "Error desconocido")
@@ -165,10 +163,49 @@ export default function DressRentalPage() {
     productosPorCategoria[product.category].push(product)
   })
 
-  // Para compatibilidad con el código existente
-  const longDresses = productosPorCategoria["Largos"] || []
-  const shortDresses = productosPorCategoria["Cortos"] || []
-  const shoesProducts = productosPorCategoria["Zapatos"] || []
+  // Función para obtener color dinámico basado en la categoría
+  // Genera un color consistente basado en el hash de la categoría
+  const obtenerColorCategoria = (categoria: string): string => {
+    // Colores predefinidos para algunas categorías comunes (opcional, solo para mantener consistencia visual)
+    const coloresPredefinidos: { [key: string]: string } = {
+      "Largos": "#128498",
+      "Cortos": "#AB9072",
+      "Zapatos": "#A1D0B2",
+      "Abrigos": "#D4A574",
+      "Accesorios": "#C4B5A0",
+      "Sacos": "#B8860B",
+    }
+    
+    // Si tiene un color predefinido, usarlo
+    if (coloresPredefinidos[categoria]) {
+      return coloresPredefinidos[categoria]
+    }
+    
+    // Generar color consistente basado en el nombre de la categoría
+    const coloresDisponibles = [
+      "#128498", "#AB9072", "#A1D0B2", "#D4A574", "#C4B5A0", 
+      "#B8860B", "#9CA3AF", "#6B7280", "#8B7355", "#7A9BA8",
+      "#9B8B6F", "#A89B7C", "#7B8A9C", "#8A7B6C", "#6C7B8A"
+    ]
+    
+    // Generar un índice basado en el hash de la categoría
+    let hash = 0
+    for (let i = 0; i < categoria.length; i++) {
+      hash = categoria.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    const index = Math.abs(hash) % coloresDisponibles.length
+    return coloresDisponibles[index]
+  }
+
+  // Función para obtener título y subtítulo de la categoría de forma completamente dinámica
+  const obtenerTituloCategoria = (categoria: string, cantidadProductos: number): { titulo: string; subtitulo: string } => {
+    // Usar directamente el nombre de la categoría y mostrar cantidad
+    const cantidadTexto = cantidadProductos === 1 ? "producto" : "productos"
+    return { 
+      titulo: categoria, 
+      subtitulo: `${cantidadProductos} ${cantidadTexto}` 
+    }
+  }
 
 
   return (
@@ -578,18 +615,6 @@ export default function DressRentalPage() {
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#128498]"></div>
               </div>
             )}
-
-            {/* Total de productos */}
-            {!loadingArticulos && (
-              <p className="mt-4 text-sm text-gray-500">
-                {allProducts.length} producto{allProducts.length !== 1 ? 's' : ''} disponible{allProducts.length !== 1 ? 's' : ''}
-                {articulosAPI.length > 0 && (
-                  <span className="text-[#128498] font-semibold ml-1">
-                    ({articulosAPI.length})
-                  </span>
-                )}
-              </p>
-            )}
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 mb-12 items-center">
@@ -610,242 +635,39 @@ export default function DressRentalPage() {
             })}
           </div>
 
-          {/* Vestidos Largos Section */}
-          {(selectedCategory === "Todos" || selectedCategory === "Largos") && longDresses.length > 0 && (
-            <div className="mb-16">
-              <div className="grid lg:grid-cols-4 gap-8 items-center">
-                <div className="lg:col-span-1">
-                  <div className="bg-[#128498] text-white p-8 rounded-2xl text-center h-full flex flex-col justify-center">
-                    <h3 className="font-serif text-3xl font-bold mb-4">Vestidos</h3>
-                    <p className="text-2xl italic">largos</p>
-                    <div className="w-16 h-0.5 bg-white mx-auto mt-4"></div>
-                  </div>
-                </div>
-                <div className="lg:col-span-3">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {longDresses.map((dress) => (
-                      <Card
-                        key={dress.id}
-                        className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#128498]/20"
-                      >
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={dress.image || "/placeholder.svg"}
-                            alt={dress.name}
-                            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          {/* Favorite button */}
-                          <button
-                            onClick={() => toggleFavorite(dress.id)}
-                            className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
-                          >
-                            <Heart className={`h-5 w-5 ${favorites.includes(dress.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'} transition-colors`} />
-                          </button>
-                        </div>
-                        <CardContent className="p-5">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-serif text-lg font-semibold text-gray-900">{dress.name}</h4>
-                            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                              <Star className="h-3.5 w-3.5 text-yellow-500 fill-current" />
-                              <span className="text-xs font-semibold text-gray-700">{dress.rating}</span>
-                            </div>
-                          </div>
-                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{dress.description}</p>
-                          <ProductDetailModal
-                            product={dress}
-                            trigger={
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedProduct(dress)
-                                  setSelectedImageIndex(0)
-                                }}
-                                className="w-full border-2 border-[#128498] text-[#128498] hover:bg-[#128498] hover:text-white bg-transparent transition-all"
-                              >
-                                Ver Detalles
-                              </Button>
-                            }
-                            favorites={favorites}
-                            toggleFavorite={toggleFavorite}
-                            AppointmentForm={AppointmentForm}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Vestidos Cortos Section */}
-          {(selectedCategory === "Todos" || selectedCategory === "Cortos") && shortDresses.length > 0 && (
-            <div>
-              <div className="grid lg:grid-cols-4 gap-8 items-center">
-                <div className="lg:col-span-1">
-                  <div className="bg-[#AB9072] text-white p-8 rounded-2xl text-center h-full flex flex-col justify-center">
-                    <h3 className="font-serif text-3xl font-bold mb-4">Vestidos</h3>
-                    <p className="text-2xl italic">cortos</p>
-                    <div className="w-16 h-0.5 bg-white mx-auto mt-4"></div>
-                  </div>
-                </div>
-                <div className="lg:col-span-3">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {shortDresses.map((dress) => (
-                      <Card
-                        key={dress.id}
-                        className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#AB9072]/20"
-                      >
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={dress.image || "/placeholder.svg"}
-                            alt={dress.name}
-                            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          {/* Favorite button */}
-                          <button
-                            onClick={() => toggleFavorite(dress.id)}
-                            className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
-                          >
-                            <Heart className={`h-5 w-5 ${favorites.includes(dress.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'} transition-colors`} />
-                          </button>
-                        </div>
-                        <CardContent className="p-5">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-serif text-lg font-semibold text-gray-900">{dress.name}</h4>
-                            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                              <Star className="h-3.5 w-3.5 text-yellow-500 fill-current" />
-                              <span className="text-xs font-semibold text-gray-700">{dress.rating}</span>
-                            </div>
-                          </div>
-                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{dress.description}</p>
-                          <ProductDetailModal
-                            product={dress}
-                            trigger={
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedProduct(dress)
-                                  setSelectedImageIndex(0)
-                                }}
-                                className="w-full border-2 border-[#AB9072] text-[#AB9072] hover:bg-[#AB9072] hover:text-white bg-transparent transition-all"
-                              >
-                                Ver Detalles
-                              </Button>
-                            }
-                            favorites={favorites}
-                            toggleFavorite={toggleFavorite}
-                            AppointmentForm={AppointmentForm}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Zapatos Section */}
-          {(selectedCategory === "Todos" || selectedCategory === "Zapatos") && shoesProducts.length > 0 && (
-            <div className="mb-16">
-              <div className="grid lg:grid-cols-4 gap-8 items-center">
-                <div className="lg:col-span-1">
-                  <div className="bg-[#A1D0B2] text-white p-8 rounded-2xl text-center h-full flex flex-col justify-center">
-                    <h3 className="font-serif text-3xl font-bold mb-4">Zapatos</h3>
-                    <p className="text-2xl italic">elegantes</p>
-                    <div className="w-16 h-0.5 bg-white mx-auto mt-4"></div>
-                  </div>
-                </div>
-                <div className="lg:col-span-3">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {shoesProducts.map((shoe) => (
-                      <Card key={shoe.id} className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#A1D0B2]/20">
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={shoe.image || "/placeholder.svg"}
-                            alt={shoe.name}
-                            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          {/* Favorite button */}
-                          <button
-                            onClick={() => toggleFavorite(shoe.id)}
-                            className="absolute top-3 right-3 bg-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-all"
-                          >
-                            <Heart className={`h-5 w-5 ${favorites.includes(shoe.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'} transition-colors`} />
-                          </button>
-                        </div>
-                        <CardContent className="p-5">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-serif text-lg font-semibold text-gray-900">{shoe.name}</h4>
-                            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
-                              <Star className="h-3.5 w-3.5 text-yellow-500 fill-current" />
-                              <span className="text-xs font-semibold text-gray-700">{shoe.rating}</span>
-                            </div>
-                          </div>
-                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{shoe.description}</p>
-                          <ProductDetailModal
-                            product={shoe}
-                            trigger={
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedProduct(shoe)
-                                  setSelectedImageIndex(0)
-                                }}
-                                className="w-full border-2 border-[#A1D0B2] text-[#A1D0B2] hover:bg-[#A1D0B2] hover:text-white bg-transparent transition-all"
-                              >
-                                Ver Detalles
-                              </Button>
-                            }
-                            favorites={favorites}
-                            toggleFavorite={toggleFavorite}
-                            AppointmentForm={AppointmentForm}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Mostrar otras categorías dinámicamente */}
+          {/* Mostrar todas las categorías dinámicamente */}
           {Object.keys(productosPorCategoria)
-            .filter(cat => !["Largos", "Cortos", "Zapatos"].includes(cat))
             .map(categoria => {
               const productos = productosPorCategoria[categoria]
               if (productos.length === 0) return null
               if (selectedCategory !== "Todos" && selectedCategory !== categoria) return null
 
-              // Color dinámico basado en la categoría
-              const coloresPorCategoria: { [key: string]: string } = {
-                "Abrigos": "#D4A574",
-                "Accesorios": "#C4B5A0",
-                "Otros": "#9CA3AF"
-              }
-              const colorCategoria = coloresPorCategoria[categoria] || "#6B7280"
+              const colorCategoria = obtenerColorCategoria(categoria)
+              const { titulo, subtitulo } = obtenerTituloCategoria(categoria, productos.length)
 
               return (
                 <div key={categoria} className="mb-16">
                   <div className="grid lg:grid-cols-4 gap-8 items-center">
                     <div className="lg:col-span-1">
                       <div className="text-white p-8 rounded-2xl text-center h-full flex flex-col justify-center" style={{ backgroundColor: colorCategoria }}>
-                        <h3 className="font-serif text-3xl font-bold mb-4">{categoria}</h3>
-                        <p className="text-2xl italic">{productos.length} productos</p>
+                        <h3 className="font-serif text-3xl font-bold mb-4">{titulo}</h3>
+                        <p className="text-2xl italic">{subtitulo}</p>
                         <div className="w-16 h-0.5 bg-white mx-auto mt-4"></div>
                       </div>
                     </div>
                     <div className="lg:col-span-3">
                       <div className="grid md:grid-cols-3 gap-6">
-                        {productos.map((product: any) => (
+                        {productos.map((product: any, index: number) => (
                           <Card
-                            key={product.id}
-                            className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-[#128498]/20"
+                            key={`${categoria}-${index}`}
+                            className="group hover:shadow-2xl transition-all duration-300 overflow-hidden border-2"
+                            style={{ borderColor: 'transparent' }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = `${colorCategoria}33`
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = 'transparent'
+                            }}
                           >
                             <div className="relative overflow-hidden">
                               <img
@@ -878,15 +700,15 @@ export default function DressRentalPage() {
                                   </div>
                                 )}
                               </div>
-                              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
-
-                              {product.categoriaOriginal && (
-                                <div className="mb-3">
+                              <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                              <div className="flex items-center justify-between mb-4">
+                                <span className="text-2xl font-bold" style={{ color: colorCategoria }}>{product.price}</span>
+                                {product.categoriaOriginal && (
                                   <Badge variant="outline" className="text-xs">
                                     {product.categoriaOriginal}
                                   </Badge>
-                                </div>
-                              )}
+                                )}
+                              </div>
 
                               <ProductDetailModal
                                 product={product}
@@ -898,8 +720,17 @@ export default function DressRentalPage() {
                                       setSelectedProduct(product)
                                       setSelectedImageIndex(0)
                                     }}
-                                    className="w-full border-2 text-[#128498] hover:bg-[#128498] hover:text-white bg-transparent transition-all"
-                                    style={{ borderColor: colorCategoria }}
+                                    className="w-full border-2 hover:text-white bg-transparent transition-all"
+                                    style={{ 
+                                      borderColor: colorCategoria,
+                                      color: colorCategoria
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.backgroundColor = colorCategoria
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.backgroundColor = 'transparent'
+                                    }}
                                   >
                                     Ver Detalles
                                   </Button>
